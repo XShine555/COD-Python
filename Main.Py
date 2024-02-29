@@ -1,11 +1,8 @@
 from ursina import Ursina
+from Modules.KeyMapper import KeyMapper
 
-class MainRender(Ursina):
-    
-    def __init__(Self, **KWArgs):
-        
-        super().__init__(**KWArgs)
-        
-Render = MainRender()
+Application = Ursina()
 
-Render.run()
+KeyMapperInstance = KeyMapper()
+
+Application.run()
