@@ -2,6 +2,8 @@ from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
 from ursina.shaders import lit_with_shadows_shader
 
+from Enemigos import Enemies
+
 class Weapon(Entity):
     def __init__(self, name, maxAmmo,model,parent,position,scale,origin_z,color):
         super().__init__()
@@ -16,7 +18,7 @@ class Weapon(Entity):
         self.color = color
         self.reloading = False
         self.cooldown = False
-        self.display_text = Text(text=f'Ammo: {self.ammo}/{self.maxAmmo}', y=-0.3, origin=(0, 0), background=True)
+        self.display_text = Text(parent= self, text=f'Ammo: {self.ammo}/{self.maxAmmo}', y=-0.3, origin=(0, 0), background=True)
 
 
     def shoot(self):
@@ -26,9 +28,21 @@ class Weapon(Entity):
         self.ammo -= 1
         invoke(self.muzzle_flash.disable, delay=.05)
         invoke(setattr,self,'cooldown', False, delay=.05)
+        print(self.ammo)
+        if self.ammo == 0:
+            self.reload()
 
     def reload(self):
-        print("reload")
+        if self.ammo < self.maxAmmo:
+            self.reloading = True
+
+    def makeReload(self):
+        if self.ammo>= self.maxAmmo:
+            self.reloading = False
+            return
+        self.ammo += 1 
+        print(self.ammo)
+        self.display_text.text = f'Ammo: {self.ammo}/{self.maxAmmo}'
 
 
 class Player(Entity):
@@ -47,14 +61,21 @@ class Player(Entity):
         self.weapons.append(arma)
     
     def input(self,key):
-        if key == "r":
-            _player.reload() 
-        if key == 'q':
-            _player.switch_weapon()
+        if key == "r" and not self.current_weapon.cooldown:
+            self.current_weapon.reload() 
+        if key == 'q'and not _player.current_weapon.cooldown and not self.current_weapon.reloading:
+            self.switch_weapon()
 
     def update(self):
-        if held_keys["left mouse"] and not self.current_weapon.cooldown:
+        if held_keys["left mouse"] and not self.current_weapon.cooldown and not self.current_weapon.reloading:
             self.current_weapon.shoot()
+
+        if self.current_weapon.reloading and not self.current_weapon.cooldown:
+            self.current_weapon.cooldown = True
+            invoke(setattr, self.current_weapon, 'cooldown', False, delay=1)
+            invoke(self.current_weapon.makeReload, delay= 0.5)
+
+            self.current_weapon.display_text.text = f'Ammo: {self.current_weapon.ammo}/{self.current_weapon.maxAmmo}'
 
 pistol = Weapon("Pistol", 8, 'cube', camera,(.5,-.25,.25), (.3,.2,1), -.5, color.red) 
 pistol.muzzle_flash = Entity(parent=pistol, z=1, world_scale=.5, model='quad', color=color.yellow, enabled=False)
