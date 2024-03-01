@@ -79,10 +79,12 @@ class PlayerController(Entity):
         # Player Movement
         
         Direction = Vec3(
+            
             Self.forward * (HeldKeys['w'] - HeldKeys['s'] )
             
             + Self.right * (HeldKeys['d'] - HeldKeys['a'] )
-        )
+            
+        ).normalized()
         
         Self.Move(Direction * Self.Velocity, True)
         
