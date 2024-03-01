@@ -20,6 +20,7 @@ class Weapon(Entity):
 
 
     def shoot(self):
+        self.display_text.disable = False
         self.cooldown = True
         self.muzzle_flash.enabled = True   
         self.ammo -= 1
