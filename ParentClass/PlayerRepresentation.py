@@ -2,11 +2,9 @@ from ursina import Entity
 
 class PlayerRepresentation(Entity):
     
-    def __init__(Self, Position = (0, 0, 0), Rotation = (0, 0, 0) ):
+    def __init__(Self, **KWArgs ):
         
-        Self.position_setter(Position)
-        
-        Self.rotation_setter(Rotation)
+        super().__init__(**KWArgs)
         
     def UpdatePos(Self, Position):
         

@@ -27,10 +27,11 @@ def update():
     DeltaTime = GlobalTime.dt
     World.doPhysics(DeltaTime)
     
-    CS.Server.process_net_events()
-    Cl.Client.process_net_events()
+    CS.Easy.process_net_events()
+    Cl.Easy.process_net_events()
     
-    Cl.Client.send_message("updatePosition", Player.position)
+    Cl.Client.send_message("updatePosition", Player.world_position)
+    Cl.Client.send_message("updateRotation", Player.world_rotation)
 
 Sky()
 
