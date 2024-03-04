@@ -1,5 +1,6 @@
 from ursinanetworking import UrsinaNetworkingClient, EasyUrsinaNetworkingClient
 from ParentClass.PlayerRepresentation import PlayerRepresentation
+from ursina import color
 
 class Client():
     
@@ -22,7 +23,7 @@ class Client():
             variableName = variable.name
             variableType = variable.content["type"]
             if variableType == "player":
-                Self.Players[variableName] = PlayerRepresentation(variable.content["position"], variable.content["rotation"] )
+                Self.Players[variableName] = PlayerRepresentation(variable.content["position"], variable.content["rotation"], model="cube", color=color.red )
         
         @Self.Easy.event
         def onReplicatedVariableUpdated(variable):

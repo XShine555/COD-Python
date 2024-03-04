@@ -14,7 +14,7 @@ Main = Ursina()
 World = BulletWorld()
 World.setGravity(Vec3(0, -9.81, 0) )
 
-CS = Server("192.168.16.36", 8080)
+#CS = Server("192.168.16.36", 8080)
 Cl = Client("192.168.16.36", 8080)
 
 Ground = Entity(model = 'plane', position = (0, 0, 0), scale = (62,0.1,62), texture = 'grass')
@@ -27,8 +27,8 @@ def update():
     DeltaTime = GlobalTime.dt
     World.doPhysics(DeltaTime)
     
-    CS.Server.process_net_events()
-    Cl.Client.process_net_events()
+    #CS.Server.process_net_events()
+    Cl.Easy.process_net_events()
     
     Cl.Client.send_message("updatePosition", Player.position)
 
