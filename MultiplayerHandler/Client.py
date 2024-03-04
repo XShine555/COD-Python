@@ -20,19 +20,20 @@ class Client():
         
         @Self.Easy.event
         def onReplicatedVariableCreated(variable):
+            print("tetas")
             variableName = variable.name
             variableType = variable.content["type"]
             if variableType == "player":
-                Self.Players[variableName] = PlayerRepresentation(variable.content["position"], variable.content["rotation"], model="cube", color=color.red )
+                print("Creating new player")
+                Self.Players[variableName] = PlayerRepresentation(model="cube", collider="box", color= color.blue)
         
         @Self.Easy.event
         def onReplicatedVariableUpdated(variable):
             variableName = variable.name
             variableType = variable.content["type"]
-            if variableType == "position":
-                Self.Players[variableName] = variable.content["position"]
-            elif variableType == "rotation":
-                Self.Players[variableName] = variable.content["rotation"]
+            if variableType == "player":
+                Self.Players[variableName].UpdatePos(variable.content["position"] )
+                Self.Players[variableName].UpdateRot(variable.content["rotation"] )
         
         
         
