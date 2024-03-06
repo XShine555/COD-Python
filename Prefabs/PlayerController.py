@@ -8,7 +8,7 @@ from ursina import mouse as StaticMouse
 
 class PlayerController(Entity):
 
-    def __init__(Self, World : BulletWorld, Height = 2, Fov = 85, **KWArgs):
+    def __init__(Self, World : BulletWorld, Height = 10, Fov = 85, **KWArgs):
 
         super().__init__(**KWArgs)
 

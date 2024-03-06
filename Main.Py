@@ -9,7 +9,6 @@ from MultiplayerHandler.Server import Server
 from MultiplayerHandler.Client import Client
 
 Entity.default_shader = lit_with_shadows_shader
-
 Main = Ursina()
 World = BulletWorld()
 World.setGravity(Vec3(0, -9.81, 0) )
@@ -27,11 +26,11 @@ def update():
     DeltaTime = GlobalTime.dt
     World.doPhysics(DeltaTime)
     
-    CS.Easy.process_net_events()
-    Cl.Easy.process_net_events()
+    #CS.Easy.process_net_events()
+    #Cl.Easy.process_net_events()
     
-    Cl.Client.send_message("updatePosition", Player.world_position)
-    Cl.Client.send_message("updateRotation", Player.world_rotation)
+    #Cl.Client.send_message("updatePosition", Player.world_position)
+    #Cl.Client.send_message("updateRotation", Player.world_rotation)
 
 Sky()
 
