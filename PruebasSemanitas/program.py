@@ -12,7 +12,7 @@ class Game():
            pass 
 
     def start_game(self):
-        button.visible_setter(False)
+        destroy(button)
         self.game = True
         random.seed(0)
         Entity.default_shader = lit_with_shadows_shader
