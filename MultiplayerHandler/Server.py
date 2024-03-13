@@ -1,5 +1,6 @@
 from ursinanetworking import UrsinaNetworkingServer, EasyUrsinaNetworkingServer
 
+@staticmethod
 class Server():
     
     def __init__(Self, IP, Port):
@@ -32,3 +33,5 @@ class Server():
         @Self.Server.event
         def updateRotation(Client, LookAt):
             Self.Easy.update_replicated_variable_by_name(f"player_{Client.id}", "rotation", LookAt)
+            
+Instance = None
