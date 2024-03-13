@@ -18,8 +18,8 @@ class Weapon(Entity):
         self.reloading = False
         self.cooldown = False
         self.time_cooldown = time_cooldown
-        self.display_text = Text(parent= self, text=f'Ammo: {self.ammo}/{self.maxAmmo}', y=-0.3, origin=(0, 0), background=True)
-
+        self.display_text = Text(parent= camera.ui, text=f'Ammo: {self.ammo}/{self.maxAmmo}', background=True)
+        
 
     def shoot(self):
         self.display_text.disable = False
@@ -42,7 +42,6 @@ class Weapon(Entity):
             return
         self.ammo += 1 
         print(self.ammo)
-        self.display_text.text = f'Ammo: {self.ammo}/{self.maxAmmo}'
 
 
 class Player(Entity):
@@ -56,6 +55,7 @@ class Player(Entity):
         self.current_weapon_index = (self.current_weapon_index + 1) % len(self.weapons)
         self.current_weapon = self.weapons[self.current_weapon_index]
         self.current_weapon.visible_setter(True)
+
 
     def añadir_arma(self, arma):
         self.weapons.append(arma)
