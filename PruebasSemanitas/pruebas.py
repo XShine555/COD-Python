@@ -58,6 +58,7 @@ class Enemy(Entity):
 
     def update(self):
         dist = distance_xz(player.position, self.position)
+        print(dist)
         if dist > 40:
             return
 
@@ -94,9 +95,6 @@ def pause_input(key):
         editor_camera.enabled = not editor_camera.enabled
 
         player.visible_self = editor_camera.enabled
-        player.cursor.enabled = not editor_camera.enabled
-        gun.enabled = not editor_camera.enabled
-        mouse.locked = not editor_camera.enabled
         editor_camera.position = player.position
 
         application.paused = editor_camera.enabled
