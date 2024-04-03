@@ -10,11 +10,6 @@ class Game():
         self.gameStarted = False
         self.time_paused = False
 
-    def hudmenu(self, key):
-        if key == "escape":
-            self.time_paused = not self.time_paused
-            application.paused = self.time_paused
-     
     def fullscreen(self):
         screen_width, screen_height = pyautogui.size()
 
@@ -33,7 +28,7 @@ class Game():
         player = FirstPersonController(model='cube', z=-10, color=color.orange, origin_y=-.5, speed=8, collider='box')
         player.collider = BoxCollider(player, Vec3(0,1,0), Vec3(1,2,1))
         self.setupWeapons()
-        self.camera = EditorCamera(enabled=False, ignore_paused=True)
+        self.editorCamera = EditorCamera(enabled=False, ignore_paused=True)
         self.gameStarted = True
 
     def setupWeapons(self):
@@ -46,6 +41,34 @@ class Game():
         self._pistol.visible_setter(False)
         self._player.añadir_arma(self._pistol)
         self._player.añadir_arma(self.pistol)
+
+    def inputhudmenu(self,key):
+        if key == "escape":
+            self.hudmenu()
+    
+    def hudmenu(self):
+        if self.gameStarted:
+                self.time_paused = not self.time_paused 
+                self.menu = self.time_paused
+                self._player._visible_self = self.time_paused
+                camera.enabled_setter(not camera.enabled)
+                self.editorCamera.enabled_setter(not camera.enabled)
+                self.editorCamera.position_setter(Vec3(1, 2, 1) )
+                mouse.locked = camera.enabled
+                mouse.position = Vec2(0,0)
+                button3.enabled = self.time_paused
+                button4.enabled = self.time_paused
+
+                #camera.ui.enabled_setter(camera.enabled)
+                application.paused = self.time_paused                    
+
+   
+
+                """camera.enabled_setter(not camera.enabled)
+                    mouse.locked = camera.enabled
+                    game.editorCamera.enabled_setter(not camera.enabled)
+                    game.editorCamera.position_setter(Vec3(1,1,1) )"""
+
 
 class HUD():
     def __init__(self):
@@ -101,6 +124,8 @@ class Player(Entity):
         self.weapons = []
         self.current_weapon_index = 0
         self.current_weapon = pistol
+        self.original_position = (0,0,0)
+        self.position = self.original_position
 
     def switch_weapon(self):
         self.current_weapon.visible_setter(False)
@@ -124,7 +149,7 @@ def input(key):
 
     if key == "enter":
         game.start_game()
-
+        
 def update():
     if game.gameStarted:
         if held_keys["left mouse"] and not game._player.current_weapon.cooldown and not game._player.current_weapon.reloading:
@@ -135,6 +160,7 @@ def update():
             invoke(setattr, game._player.current_weapon, 'cooldown', False, delay=1)
             invoke(game._player.current_weapon.makeReload, delay= 0.5)
         hud.updateAmmo(game._player.current_weapon.ammo, game._player.current_weapon.cargador)
+        game._player.position
 
 
 hud = HUD()
@@ -143,13 +169,16 @@ app = Ursina()
 game = Game()
 button = Button(text="Zombies", color=color.red, scale=(0.6, 0.1), position=(0, 0.1))
 button2 = Button(text="Exit", color=color.black, scale=(0.6, 0.1), position=(0, -0.1))
+button3 = Button(text="Zombies", color=color.red, scale=(0.6, 0.1), position=(0, 0.1),enabled = False)
+button4= Button(text="Exit", color=color.black, scale=(0.6, 0.1), position=(0, -0.1), enabled = False)
+pause_handler = Entity(ignore_paused=True, input=game.inputhudmenu)
 
-pause_handler = Entity(ignore_paused=True, input=game.hudmenu)
-
-#game.fullscreen()
+game.fullscreen()
 
 button.on_click = game.start_game
 button2.on_click = application.quit
+button3.on_click = game.hudmenu
+button4.on_click = application.quit
 
 sun = DirectionalLight()
 sun.look_at(Vec3(1,-1,-1))
