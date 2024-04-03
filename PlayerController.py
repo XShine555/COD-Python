@@ -60,7 +60,7 @@ class PlayerController(Entity):
         
     def SetCameraDistance(Self, Value):
         
-        StaticCamera.z_setter(Value)
+        StaticCamera.z = Value
         
     def SetFov(Self, Value):
         
