@@ -6,6 +6,8 @@ class FireModes(Enum):
     
     SemiAutomatic = "SemiAutomatic"
     
-    Burst = "Burst"
+    Burst_2 = "Burst-2"
+    
+    Burst_3 = "Burst-3"
     
     Automatic = "Automatic"

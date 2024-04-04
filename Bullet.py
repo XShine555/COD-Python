@@ -1,4 +1,4 @@
-from ursina import Entity, Vec3
+from ursina import Entity, Vec3, destroy as DestroyEntity
 from direct.showbase.ShowBaseGlobal import globalClock
 from ursina import camera
 from Game import Instance
@@ -7,11 +7,11 @@ FrameTime = globalClock.getFrameTime
 
 class Bullet(Entity):
     
-    def __init__(Self, StartPosition, Speed = 350.0, Gravity = 9.8, BulletDropPerMeter = 1, **KWargs):
+    def __init__(Self, StartPosition, Speed = 350.0, Gravity = 9.8, BulletDropPerMeter = 1, DestroyAfter = 5, **KWargs):
         
         super().__init__(**KWargs)
         
-        Self.StartTime = None
+        Self.StartTime = FrameTime()
         
         Self.world_position = StartPosition
         
@@ -27,6 +27,8 @@ class Bullet(Entity):
         
         Self.BulletDropPerMeter = BulletDropPerMeter
         
+        Self.DestroyAfter = Self.StartTime + DestroyAfter
+        
     def ParabolicFormula(Self, Time):
         
         Point = Self.StartPosition + (Self.Forward * Self.Speed[0] * Time)
@@ -36,10 +38,12 @@ class Bullet(Entity):
         return Point + Gravity
     
     def update(Self):
-        
-        if Self.StartTime is None:
             
-            Self.StartTime = FrameTime()
+        if FrameTime() > Self.DestroyAfter:
+            
+            DestroyEntity(Self)
+            
+            return
             
         CurrentTime = FrameTime() - Self.StartTime
         

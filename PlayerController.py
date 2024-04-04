@@ -5,10 +5,11 @@ from panda3d.bullet import BulletWorld
 from ursina import held_keys as HeldKeys
 from ursina import camera as StaticCamera
 from ursina import mouse as StaticMouse
+from Enums.Keys import Keys
 
 class PlayerController(Entity):
 
-    def __init__(Self, World : BulletWorld, Height = 10, Fov = 85, **KWArgs):
+    def __init__(Self, World : BulletWorld, Height = 10, Fov = 85, RunVelocity = 24, WalkVelocity = 14, **KWArgs):
 
         super().__init__(**KWArgs)
 
@@ -16,11 +17,17 @@ class PlayerController(Entity):
 
         Self.Controller = CharacterController(World, Self)
 
-        Self.Velocity = 14
+        Self.WalkVelocity = WalkVelocity
+        
+        Self.RunVelocity = RunVelocity
+
+        Self.Velocity = Self.WalkVelocity
         
         Self.Height = Height
         
         Self.CameraPivot = Entity(parent = Self, y = Height)
+        
+        Self.Running = False
         
         # Camera
         
@@ -73,6 +80,20 @@ class PlayerController(Entity):
     def SetThirdPerson(Self):
         
         Self.SetCameraDistance(-10)
+        
+    def input(Self, Key):
+        
+        if Key == Keys.LeftShift.value:
+            
+            Self.Velocity = Self.RunVelocity
+            
+            Self.Running = True
+            
+        elif Key == Keys.LeftShiftUp.value:
+            
+            Self.Velocity = Self.WalkVelocity
+            
+            Self.Running = False
         
     def update(Self):
         

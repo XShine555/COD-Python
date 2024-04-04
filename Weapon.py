@@ -1,5 +1,4 @@
-from ursina import Entity, held_keys as HeldKeys, camera as InstanceCamera, invoke as Invoke, time as Time
-from time import sleep as Sleep
+from ursina import Entity, camera as InstanceCamera, Vec3, lerp as Lerp, clamp as Clamp
 from Bullet import Bullet
 from Enums.FireModes import FireModes
 from Enums.Keys import Keys
@@ -9,7 +8,7 @@ from direct.task.Task import Task
 
 class Weapon(Entity):
     
-    def __init__(Self, Magazine, MaxMagazineAmmo, MaxTotalAmmo, BulletType : Bullet, FireMode : FireModes = FireModes.Safe, AvailableFireModes : Tuple[FireModes] = (FireModes.Safe, FireModes.SemiAutomatic, FireModes.Burst, FireModes.Automatic), **KWArgs):
+    def __init__(Self, Magazine, MaxMagazineAmmo, MaxTotalAmmo, BulletType : Bullet, FireMode : FireModes = FireModes.Safe, AvailableFireModes : Tuple[FireModes] = (FireModes.Safe, FireModes.SemiAutomatic, FireModes.Burst_2, FireModes.Burst_3, FireModes.Automatic), AimPosition = Vec3(-0.25, 0, 0), **KWArgs):
         
         super().__init__(**KWArgs)
         
@@ -34,6 +33,14 @@ class Weapon(Entity):
         Self.ShootRate = (60 / 750)
         
         Self.WeaponCooldown = False
+        
+        Self.Aimming = False
+        
+        Self.StartPosition = Self.position
+        
+        Self.StartRotation = Self.rotation
+        
+        Self.AimPosition = Self.StartPosition + AimPosition
         
     def CycleFireMode(Self):
         
@@ -70,8 +77,24 @@ class Weapon(Entity):
             await Task.pause(Self.ShootRate)
             
             Self.WeaponCooldown = False
+        
+        elif Self.FireMode is FireModes.Burst_2:
             
-        elif Self.FireMode is FireModes.Burst:
+            for I in range(2):
+                
+                if not Self.LeftMouseDown:
+                    
+                    break
+                
+                Self.WeaponCooldown = True
+                
+                Self.SpawnBullet()
+                
+                await Task.pause(Self.ShootRate)
+                
+                Self.WeaponCooldown = False
+            
+        elif Self.FireMode is FireModes.Burst_3:
             
             for I in range(3):
                 
@@ -114,3 +137,35 @@ class Weapon(Entity):
         if Key == Keys.LeftMouseUp.value:
             
             Self.LeftMouseDown = False
+            
+        if Key == Keys.RightMouseDown.value:
+            
+            Self.Aimming = not Self.Aimming
+            
+    def update(Self):
+        
+        if Self.Aimming and not Instance.FPSController.Running:
+            
+            Self.position = Lerp(Self.position, Self.AimPosition,  0.2)
+            
+            InstanceCamera.fov = Lerp(InstanceCamera.fov, 65, 0.2)
+            
+        else:
+            
+            Self.Aimming = False
+            
+            Self.position = Lerp(Self.position, Self.StartPosition, 0.2)
+            
+            InstanceCamera.fov = Lerp(InstanceCamera.fov, 80, 0.2)
+            
+        # Weapon Sway
+            
+        Self.rotation = Lerp(Self.rotation, Self.StartRotation, 0.1)
+            
+        XAxis = Clamp(Instance.mouse.velocity.x * 10, -65, 65)
+        
+        YAxis = Clamp(Instance.mouse.velocity.y * 10, -65, 65)
+            
+        SwayTarget = Vec3(-YAxis, -XAxis, 0)
+        
+        Self.rotation = Lerp(Self.rotation, Self.rotation + SwayTarget, 0.8)

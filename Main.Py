@@ -6,7 +6,7 @@ from Game import Instance
 
 Instance.LoadScene("Town")
 
-FPSController = PlayerController(World = Instance.BulletWorld, model = "cube", Height=2)
+Instance.FPSController = PlayerController(World = Instance.BulletWorld, model = "cube", Height=2)
 Gun = Glock17()
 Gun.parent = camera
 
