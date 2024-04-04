@@ -82,6 +82,10 @@ class Game(Ursina):
 
                     break
 
+        if Key in Self._input_name_changes:
+
+            Key = Self._input_name_changes[Key]
+
         return Key
 
     def _RawKeyUp(Self, Key):
@@ -89,6 +93,14 @@ class Game(Ursina):
         SanitizeKey = Self._SanitizeKey(Key)
 
         Self.HeldKeys[SanitizeKey] = 0
+
+        if Key in Self._input_name_changes:
+
+            for Entity in SceneInstance.entities:
+
+                if hasattr(Entity, "HandleInput"):
+
+                    Entity.HandleInput(F"{SanitizeKey} up")
 
     def _RawKeyDown(Self, Key):
         

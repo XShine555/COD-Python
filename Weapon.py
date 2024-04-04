@@ -8,13 +8,15 @@ from direct.task.Task import Task
 
 class Weapon(Entity):
     
-    def __init__(Self, Magazine, MaxMagazineAmmo, MaxTotalAmmo, BulletType : Bullet, FireMode : FireModes = FireModes.Safe, AvailableFireModes : Tuple[FireModes] = (FireModes.Safe, FireModes.SemiAutomatic, FireModes.Burst_2, FireModes.Burst_3, FireModes.Automatic), AimPosition = Vec3(-0.25, 0, 0), **KWArgs):
+    def __init__(Self, Magazine, MaxMagazineAmmo, ReserveAmmo, MaxTotalAmmo, BulletType : Bullet, FireMode : FireModes = FireModes.Safe, AvailableFireModes : Tuple[FireModes] = (FireModes.Safe, FireModes.SemiAutomatic, FireModes.Burst_2, FireModes.Burst_3, FireModes.Automatic), IncludeChamberedBullet = True, AimPosition = Vec3(-0.25, 0, 0), **KWArgs):
         
         super().__init__(**KWArgs)
         
         Self.Magazine = Magazine
         
         Self.MaxMagazineAmmo = MaxMagazineAmmo
+
+        Self.ReserveAmmo = ReserveAmmo
         
         Self.MaxTotalAmmo = MaxTotalAmmo
         
@@ -41,6 +43,12 @@ class Weapon(Entity):
         Self.StartRotation = Self.rotation
         
         Self.AimPosition = Self.StartPosition + AimPosition
+
+        Self.Reloading = False
+
+        Self.ReloadTime = 3
+
+        Self.IncludeChamberedBullet = IncludeChamberedBullet
         
     def CycleFireMode(Self):
         
@@ -68,11 +76,17 @@ class Weapon(Entity):
             
             return
         
+        if Self.Reloading:
+
+            return
+        
         Self.WeaponCooldown = True
         
         if Self.FireMode is FireModes.SemiAutomatic:
             
             Self.SpawnBullet()
+
+            Self.Magazine -= 1
         
             await Task.pause(Self.ShootRate)
             
@@ -82,13 +96,15 @@ class Weapon(Entity):
             
             for I in range(2):
                 
-                if not Self.LeftMouseDown:
+                if not Self.LeftMouseDown or Self.Magazine < 1:
                     
                     break
                 
                 Self.WeaponCooldown = True
                 
                 Self.SpawnBullet()
+
+                Self.Magazine -= 1
                 
                 await Task.pause(Self.ShootRate)
                 
@@ -98,29 +114,73 @@ class Weapon(Entity):
             
             for I in range(3):
                 
-                if not Self.LeftMouseDown:
+                if not Self.LeftMouseDown or Self.Magazine < 1:
                     
                     break
                 
                 Self.WeaponCooldown = True
                 
                 Self.SpawnBullet()
-                
+
+                Self.Magazine -= 1
+
                 await Task.pause(Self.ShootRate)
                 
                 Self.WeaponCooldown = False
                 
         elif Self.FireMode is FireModes.Automatic:
             
-            while Self.LeftMouseDown:
+            while Self.LeftMouseDown and Self.Magazine > 0:
             
                 Self.WeaponCooldown = True
                 
                 Self.SpawnBullet()
+
+                Self.Magazine -= 1
+
+                print(Self.Magazine, Self.ReserveAmmo, Self.MaxMagazineAmmo)
                 
                 await Task.pause(Self.ShootRate)
                 
                 Self.WeaponCooldown = False
+
+    async def Reload(Self):
+
+        if Self.Reloading:
+
+            return
+
+        if Self.ReserveAmmo < 1:
+
+            return
+
+        if Self.IncludeChamberedBullet and Self.Magazine >= Self.MaxMagazineAmmo + 1:
+
+            return
+        
+        Instance.FPSController.CanRun = False
+
+        Instance.FPSController.SetRunningState(False)
+
+        Self.Reloading = True
+
+        NewRefill = min(Self.MaxMagazineAmmo - Self.Magazine, Self.ReserveAmmo)
+        
+        if Self.IncludeChamberedBullet and Self.ReserveAmmo >= NewRefill + 1 and Self.Magazine >= 1:
+
+            NewRefill += 1
+
+        print(NewRefill, NewRefill + Self.Magazine, Self.MaxMagazineAmmo)
+
+        await Task.pause(Self.ReloadTime)
+
+        Self.Magazine += NewRefill
+
+        Self.ReserveAmmo -= NewRefill
+
+        Self.Reloading = False
+
+        Instance.FPSController.CanRun = True
         
     def HandleInput(Self, Key):
         
@@ -141,6 +201,10 @@ class Weapon(Entity):
         elif Key is Keys.RightMouseDown:
 
             Self.Aimming = not Self.Aimming
+
+        elif Key is Keys.R:
+
+            Instance.taskMgr.add(Self.Reload() )
             
     def update(Self):
         

@@ -8,7 +8,7 @@ from ursina import window
 
 Instance.LoadScene("Town")
 
-Instance.FPSController = PlayerController(World = Instance.BulletWorld, model = "cube", Height=2)
+Instance.FPSController = PlayerController(World = Instance.BulletWorld, model = "cube", Height = 2)
 Gun = Glock17()
 Gun.parent = camera
 

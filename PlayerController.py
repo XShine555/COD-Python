@@ -28,6 +28,8 @@ class PlayerController(Entity):
         Self.CameraPivot = Entity(parent = Self, y = Height)
         
         Self.Running = False
+
+        Self.CanRun = True
         
         # Camera
         
@@ -80,21 +82,29 @@ class PlayerController(Entity):
     def SetThirdPerson(Self):
         
         Self.SetCameraDistance(-10)
+
+    def SetRunningState(Self, Running):
+
+        Self.Running = Running
+
+        if Self.Running:
+
+            Self.Velocity = Self.RunVelocity
+
+        else:
+
+            Self.Velocity = Self.WalkVelocity
         
     def HandleInput(Self, Key):
         
-        if Key is Keys.LeftShift:
-            
-            Self.Velocity = Self.RunVelocity
-            
-            Self.Running = True
-            
-        elif Key is Keys.LeftShift:
-            
-            Self.Velocity = Self.WalkVelocity
-            
-            Self.Running = False
-        
+        if Key == Keys.LeftShift and Self.CanRun:
+
+            Self.SetRunningState(True)
+
+        elif Key == Keys.LeftShiftUp:
+
+            Self.SetRunningState(False)
+
     def update(Self):
         
         # Player Movement
