@@ -4,6 +4,8 @@ from Weapons.Glock17 import Glock17
 from ursina import *
 from Game import Instance
 
+from ursina import window
+
 Instance.LoadScene("Town")
 
 Instance.FPSController = PlayerController(World = Instance.BulletWorld, model = "cube", Height=2)

@@ -1,6 +1,4 @@
-from enum import Enum
-
-class Keys(Enum):
+class Keys():
     LeftMouseDown = 'left mouse down'
     LeftMouseUp = 'left mouse up'
     MiddleMouseDown = 'middle mouse down'
@@ -71,6 +69,9 @@ class Keys(Enum):
     GamepadLeftShoulderUp = 'gamepad left shoulder up'
     GamepadRightShoulder = 'gamepad right shoulder'
     GamepadRightShoulderUp = 'gamepad right shoulder up'
+    PrefixControl = 'control-'
+    PrefixShift = 'shift-'
+    PrefixAlt = 'alt-'
     A = 'a'
     B = 'b'
     C = 'c'

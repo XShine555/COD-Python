@@ -2,10 +2,10 @@ from ursina import Entity, Vec3
 from ursina import clamp as Clamp
 from physics3d.character_controller import CharacterController
 from panda3d.bullet import BulletWorld
-from ursina import held_keys as HeldKeys
 from ursina import camera as StaticCamera
 from ursina import mouse as StaticMouse
 from Enums.Keys import Keys
+from Game import Instance
 
 class PlayerController(Entity):
 
@@ -81,15 +81,15 @@ class PlayerController(Entity):
         
         Self.SetCameraDistance(-10)
         
-    def input(Self, Key):
+    def HandleInput(Self, Key):
         
-        if Key == Keys.LeftShift.value:
+        if Key is Keys.LeftShift:
             
             Self.Velocity = Self.RunVelocity
             
             Self.Running = True
             
-        elif Key == Keys.LeftShiftUp.value:
+        elif Key is Keys.LeftShift:
             
             Self.Velocity = Self.WalkVelocity
             
@@ -101,9 +101,9 @@ class PlayerController(Entity):
         
         Direction = Vec3(
             
-            Self.forward * (HeldKeys['w'] - HeldKeys['s'] )
+            Self.forward * (Instance.HeldKeys[Keys.W] - Instance.HeldKeys[Keys.S] )
             
-            + Self.right * (HeldKeys['d'] - HeldKeys['a'] )
+            + Self.right * (Instance.HeldKeys[Keys.D] - Instance.HeldKeys[Keys.A] )
             
         ).normalized()
         

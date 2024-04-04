@@ -122,24 +122,24 @@ class Weapon(Entity):
                 
                 Self.WeaponCooldown = False
         
-    def input(Self, Key):
+    def HandleInput(Self, Key):
         
-        if Key == Keys.V.value:
+        if Key is Keys.V:
             
             Self.CycleFireMode()
-        
-        if Key == Keys.LeftMouseDown.value:
-        
+
+        elif Key is Keys.LeftMouseDown:
+            
             Self.LeftMouseDown = True
-            
+
             Instance.taskMgr.add(Self.Shoot() )
-            
-        if Key == Keys.LeftMouseUp.value:
-            
+
+        elif Key is Keys.LeftMouseUp:
+
             Self.LeftMouseDown = False
-            
-        if Key == Keys.RightMouseDown.value:
-            
+
+        elif Key is Keys.RightMouseDown:
+
             Self.Aimming = not Self.Aimming
             
     def update(Self):

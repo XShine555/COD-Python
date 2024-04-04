@@ -1,9 +1,9 @@
 from ursina import Entity, Vec3, destroy as DestroyEntity
-from direct.showbase.ShowBaseGlobal import globalClock
+from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock
 from ursina import camera
 from Game import Instance
 
-FrameTime = globalClock.getFrameTime
+FrameTime = GlobalClock.getFrameTime
 
 class Bullet(Entity):
     

@@ -1,13 +1,18 @@
-from ursina import Ursina, Vec3
-from ursina import time as Time
+from ursina import Ursina, Vec3, time as Time
+from ursina.main import keyboard_keys as KeyboardKeys
+from ursina.scene import instance as SceneInstance
 from Scene import Scene
 from importlib.util import spec_from_file_location as LoadFile, module_from_spec as ModuleToSpec
 from panda3d.bullet import BulletWorld
+from Enums.Keys import Keys
+from collections import defaultdict as DefaultDict
+from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock
+from direct.showbase.ShowBaseGlobal import ClockObject
 
 class Game(Ursina):
     
     def __init__(Self, **KWargs):
-        
+
         super().__init__(**KWargs)
         
         Self.CurrentScene : Scene = None
@@ -24,11 +29,112 @@ class Game(Ursina):
         
         Self.BulletWorld.setGravity(Self.Gravity)
         
-        Self.taskMgr.add(Self.PipeLineRender, "PipeLineRender")
+        Self.taskMgr.add(Self._PipeLineRender, "PipeLineRender")
         
         Self.FixedTimeStep = 1.0 / 60.0
         
         Self.PhysicsAccumulator = 0
+
+        # Custom Mapping Keys
+
+        Self.ignoreAll()
+
+        Self.buttonThrowers[0].node().setButtonUpEvent('ButtonUp')
+
+        Self.buttonThrowers[0].node().setButtonDownEvent('ButtonDown')
+
+        Self.buttonThrowers[0].node().setRawButtonUpEvent('RawKeyUp')
+
+        Self.buttonThrowers[0].node().setRawButtonDownEvent('RawKeyDown')
+
+        Self.accept('ButtonUp', Self._ButtonUp)
+
+        Self.accept('ButtonDown', Self._ButtonDown)
+
+        Self.accept('RawKeyUp', Self._RawKeyUp)
+
+        Self.accept('RawKeyDown', Self._RawKeyDown)
+
+        Self.HeldKeys = DefaultDict(lambda: 0)
+
+        # Whitelisted Special Keys
+
+        Self.SpecialWhiteListKeys = {
+            'mouse1' : Keys.LeftMouseDown,
+            'mouse1 up' : Keys.LeftMouseUp, 
+            'mouse2' : Keys.MiddleMouseDown, 
+            'mouse2 up' : Keys.MiddleMouseUp, 
+            'mouse3' : Keys.RightMouseDown, 
+            'mouse3 up' : Keys.RightMouseUp
+        }
+
+    # Private Functions
+
+    def _SanitizeKey(Self, Key):
+
+        if Key in KeyboardKeys:
+
+            for Prefix in (Keys.PrefixControl, Keys.PrefixAlt, Keys.PrefixShift):
+
+                if Prefix in Key:
+
+                    Key.replace(Prefix, '')
+
+                    break
+
+        return Key
+
+    def _RawKeyUp(Self, Key):
+        
+        SanitizeKey = Self._SanitizeKey(Key)
+
+        Self.HeldKeys[SanitizeKey] = 0
+
+    def _RawKeyDown(Self, Key):
+        
+        SanitizeKey = Self._SanitizeKey(Key)
+
+        Self.HeldKeys[SanitizeKey] = 1
+
+        for Entity in SceneInstance.entities:
+
+            if hasattr(Entity, "HandleInput"):
+
+                Entity.HandleInput(SanitizeKey)
+
+    def _ButtonUp(Self, Key):
+
+        if Key in Self.SpecialWhiteListKeys:
+
+            for Entity in SceneInstance.entities:
+
+                if hasattr(Entity, "HandleInput"):
+
+                    Entity.HandleInput(Self.SpecialWhiteListKeys[F"{Key} up"] )
+
+    def _ButtonDown(Self, Key):
+        
+        if Key in Self.SpecialWhiteListKeys:
+
+            for Entity in SceneInstance.entities:
+
+                if hasattr(Entity, "HandleInput"):
+
+                    Entity.HandleInput(Self.SpecialWhiteListKeys[Key] )
+
+    def _PipeLineRender(Self, Task):
+        
+        Self.PhysicsAccumulator += Time.dt
+        
+        while Self.PhysicsAccumulator >= Self.FixedTimeStep:
+            
+            Self.BulletWorld.doPhysics(Self.FixedTimeStep, 10)
+            
+            Self.PhysicsAccumulator -= Self.FixedTimeStep
+        
+        return Task.cont
+
+    # Public Functions
         
     def LoadScene(Self, Name):
         
@@ -61,17 +167,19 @@ class Game(Ursina):
         Self.Gravity = Gravity
         
         Self.BulletWorld.setGravity(Self.Gravity)
+
+    def LimitFPS(Self, Limit):
+
+        GlobalClock.setMode(ClockObject.MLimited)
+
+        GlobalClock.setFrameRate(Limit)
+
+    def UnLimitFPS(Self):
+
+        GlobalClock.setMode(ClockObject.MNormal)
+
+    def ActivateVSync(Self):
         
-    def PipeLineRender(Self, Task):
-        
-        Self.PhysicsAccumulator += Time.dt
-        
-        while Self.PhysicsAccumulator >= Self.FixedTimeStep:
-            
-            Self.BulletWorld.doPhysics(Self.FixedTimeStep, 10)
-            
-            Self.PhysicsAccumulator -= Self.FixedTimeStep
-        
-        return Task.cont
+        pass
         
 Instance = Game()
