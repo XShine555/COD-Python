@@ -6,6 +6,8 @@ from typing import Tuple
 from Game import Instance
 from direct.task.Task import Task
 
+from random import randint
+
 class Weapon(Entity):
     
     def __init__(Self, Magazine, MaxMagazineAmmo, ReserveAmmo, MaxTotalAmmo, BulletType : Bullet, FireMode : FireModes = FireModes.Safe, AvailableFireModes : Tuple[FireModes] = (FireModes.Safe, FireModes.SemiAutomatic, FireModes.Burst_2, FireModes.Burst_3, FireModes.Automatic), IncludeChamberedBullet = True, AimPosition = Vec3(-0.25, 0, 0), **KWArgs):
@@ -49,6 +51,8 @@ class Weapon(Entity):
         Self.ReloadTime = 3
 
         Self.IncludeChamberedBullet = IncludeChamberedBullet
+
+        Self.RecoilVector : Vec3 = Vec3(0, 0, 0)
         
     def CycleFireMode(Self):
         
@@ -139,10 +143,21 @@ class Weapon(Entity):
                 Self.Magazine -= 1
 
                 print(Self.Magazine, Self.ReserveAmmo, Self.MaxMagazineAmmo)
-                
+
+                Gvr = (randint(20,25) / 10) * 1
+                Gdr = (randint(-1, 1) * randint(10,20) / 10) * 1
+                Glr = (randint(15,20)) * 1
+                Grr = (randint(15,20)) * 1
+                Ghr = (randint(-Grr,Glr) / 10)
+                WeaponRecoil = min(0.25, 1.5)
+
+                Self.RecoilVector = Vec3(Gvr * WeaponRecoil, Ghr * WeaponRecoil, Gdr * WeaponRecoil)
+
                 await Task.pause(Self.ShootRate)
                 
                 Self.WeaponCooldown = False
+
+                Self.RecoilVector = Vec3(0, 0, 0)
 
     async def Reload(Self):
 
@@ -232,4 +247,4 @@ class Weapon(Entity):
             
         SwayTarget = Vec3(-YAxis, -XAxis, XAxis)
         
-        Self.rotation = Lerp(Self.rotation, Self.rotation + SwayTarget, 0.8)
+        Self.rotation = Lerp(Self.rotation, Self.rotation + SwayTarget + -Self.RecoilVector, 0.8)
