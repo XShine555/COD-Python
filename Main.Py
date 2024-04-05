@@ -5,6 +5,7 @@ from ursina import *
 from Game import Instance
 
 Instance.LoadScene("Town")
+Instance.LoadScene("Casa")
 
 Instance.FPSController = PlayerController(World = Instance.BulletWorld, model = "cube", Height=2)
 Gun = Glock17()

@@ -11,6 +11,8 @@ from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock
 from direct.showbase.ShowBaseGlobal import ClockObject
 import __main__
 
+from physics3d import Debugger
+
 class Game(Ursina):
     
     def __init__(Self, **KWargs):
@@ -26,6 +28,8 @@ class Game(Ursina):
         # Physics
         
         Self.BulletWorld = BulletWorld()
+        
+        Debugger(Self.BulletWorld, wireframe=True)
         
         Self.Gravity = Vec3(0, -9.81, 0)
         
@@ -230,7 +234,9 @@ class Game(Ursina):
             
             if Self.CurrentScene is not None:
                 
-                Self.CurrentScene.DestroyScene()
+                pass
+                
+                #Self.CurrentScene.DestroyScene()
             
             File = LoadFile(Name, F"{Self.SceneDirectory}/{Name}.py")
             

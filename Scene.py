@@ -1,4 +1,4 @@
-from ursina import Entity
+from ursina import Entity, destroy as Destroy
 
 class Scene(Entity):
     
@@ -16,4 +16,4 @@ class Scene(Entity):
         
     def DestroyScene(Self):
         
-        Self.destroy()
+        Destroy(Self)
