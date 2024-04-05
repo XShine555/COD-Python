@@ -37,7 +37,7 @@ class Bullet(Entity):
         
         return Point + Gravity
     
-    def update(Self):
+    def Update(Self, DeltaTime):
             
         if FrameTime() > Self.DestroyAfter:
             

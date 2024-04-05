@@ -9,7 +9,7 @@ from Game import Instance
 
 class PlayerController(Entity):
 
-    def __init__(Self, World : BulletWorld, Height = 10, Fov = 85, RunVelocity = 24, WalkVelocity = 14, **KWArgs):
+    def __init__(Self, World : BulletWorld, StandardFov = 80, Height = 10, Fov = 85, RunVelocity = 24, WalkVelocity = 14, **KWArgs):
 
         super().__init__(**KWArgs)
 
@@ -30,6 +30,8 @@ class PlayerController(Entity):
         Self.Running = False
 
         Self.CanRun = True
+        
+        Self.Jumping = not Self.Controller.can_jump
         
         # Camera
         
@@ -75,6 +77,14 @@ class PlayerController(Entity):
         
         StaticCamera.fov = Value
         
+    def AddFov(Self, Value):
+        
+        StaticCamera.fov += Value
+        
+    def RemoveFov(Self, Value):
+        
+        StaticCamera.fov -= Value
+        
     def SetFirstPerson(Self):
         
         Self.SetCameraDistance(0)
@@ -104,8 +114,16 @@ class PlayerController(Entity):
         elif Key == Keys.LeftShiftUp:
 
             Self.SetRunningState(False)
+            
+        elif Key == Keys.Space:
 
-    def update(Self):
+            if Self.Jumping:
+                
+                return
+            
+            Self.Jump()
+
+    def Update(Self, DeltaTime):
         
         # Player Movement
         

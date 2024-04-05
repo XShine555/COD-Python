@@ -1,4 +1,5 @@
-from ursina import Ursina, Vec3, time as Time
+from ursina import Ursina, Vec3, time as Time, application as ApplicationInstance
+from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock
 from ursina.main import keyboard_keys as KeyboardKeys
 from ursina.scene import instance as SceneInstance
 from Scene import Scene
@@ -8,6 +9,7 @@ from Enums.Keys import Keys
 from collections import defaultdict as DefaultDict
 from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock
 from direct.showbase.ShowBaseGlobal import ClockObject
+import __main__
 
 class Game(Ursina):
     
@@ -29,15 +31,21 @@ class Game(Ursina):
         
         Self.BulletWorld.setGravity(Self.Gravity)
         
-        Self.taskMgr.add(Self._PipeLineRender, "PipeLineRender")
+        Self.taskMgr.remove("update")
+        
+        Self.taskMgr.add(Self._UpdatePipeLine, "UpdatePipeLine")
+        
+        Self.taskMgr.add(Self._PhysicsPipeLine, "PipeLineRender")
         
         Self.FixedTimeStep = 1.0 / 60.0
         
         Self.PhysicsAccumulator = 0
 
         # Custom Mapping Keys
+        
+        for Mode in ('buttonDown', 'buttonUp', 'buttonHold', 'keystroke'):
 
-        Self.ignoreAll()
+            Self.ignore(Mode)
 
         Self.buttonThrowers[0].node().setButtonUpEvent('ButtonUp')
 
@@ -69,6 +77,8 @@ class Game(Ursina):
         }
 
     # Private Functions
+    
+    # Keys Binding Functions
 
     def _SanitizeKey(Self, Key):
 
@@ -97,6 +107,14 @@ class Game(Ursina):
         if Key in Self._input_name_changes:
 
             for Entity in SceneInstance.entities:
+                
+                if not Entity.enabled or Entity.ignore or Entity.ignore_input:
+                    
+                    continue
+                
+                if ApplicationInstance.paused and not Entity.ignore_paused:
+                    
+                    continue
 
                 if hasattr(Entity, "HandleInput"):
 
@@ -109,6 +127,14 @@ class Game(Ursina):
         Self.HeldKeys[SanitizeKey] = 1
 
         for Entity in SceneInstance.entities:
+            
+            if not Entity.enabled or Entity.ignore or Entity.ignore_input:
+                    
+                    continue
+                
+            if ApplicationInstance.paused and not Entity.ignore_paused:
+                    
+                continue
 
             if hasattr(Entity, "HandleInput"):
 
@@ -119,6 +145,14 @@ class Game(Ursina):
         if Key in Self.SpecialWhiteListKeys:
 
             for Entity in SceneInstance.entities:
+                
+                if not Entity.enabled or Entity.ignore or Entity.ignore_input:
+                    
+                    continue
+                
+                if ApplicationInstance.paused and not Entity.ignore_paused:
+                    
+                    continue
 
                 if hasattr(Entity, "HandleInput"):
 
@@ -129,12 +163,22 @@ class Game(Ursina):
         if Key in Self.SpecialWhiteListKeys:
 
             for Entity in SceneInstance.entities:
+                
+                if not Entity.enabled or Entity.ignore or Entity.ignore_input:
+                    
+                    continue
+                
+                if ApplicationInstance.paused and not Entity.ignore_paused:
+                    
+                    continue
 
                 if hasattr(Entity, "HandleInput"):
 
                     Entity.HandleInput(Self.SpecialWhiteListKeys[Key] )
+                    
+    # Physics Update
 
-    def _PipeLineRender(Self, Task):
+    def _PhysicsPipeLine(Self, Task):
         
         Self.PhysicsAccumulator += Time.dt
         
@@ -143,7 +187,39 @@ class Game(Ursina):
             Self.BulletWorld.doPhysics(Self.FixedTimeStep, 10)
             
             Self.PhysicsAccumulator -= Self.FixedTimeStep
+            
+            for Entity in SceneInstance.entities:
+                
+                 if hasattr(Entity, "PhysicsUpdate"):
+                     
+                    Entity.PhysicsUpdate()
+                    
+            return Task.cont
+                    
+    def _UpdatePipeLine(Self, Task):
+            
+        Time.dt = GlobalClock.getDt() * ApplicationInstance.time_scale
         
+        Self.mouse.update()
+        
+        if hasattr(__main__, 'Update') and __main__.Update and not ApplicationInstance.paused:
+
+            __main__.Update(Time.dt)
+            
+        for Entity in SceneInstance.entities:
+            
+            if not Entity.enabled or Entity.ignore:
+                
+                continue
+
+            if ApplicationInstance.paused and not Entity.ignore_paused:
+                
+                continue
+
+            if hasattr(Entity, 'Update') and callable(Entity.Update):
+                
+                Entity.Update(Time.dt)
+            
         return Task.cont
 
     # Public Functions
@@ -189,9 +265,5 @@ class Game(Ursina):
     def UnLimitFPS(Self):
 
         GlobalClock.setMode(ClockObject.MNormal)
-
-    def ActivateVSync(Self):
-        
-        pass
         
 Instance = Game()

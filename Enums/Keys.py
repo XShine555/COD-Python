@@ -36,6 +36,7 @@ class Keys():
     Backspace = 'backspace'
     Escape = 'escape'
     Tab = 'tab'
+    Space = 'space'
     GamepadLeftStickX = 'gamepad left stick x'   
     GamepadLeftStickY = 'gamepad left stick y'   
     GamepadRightStickX = 'gamepad right stick x'   

@@ -5,8 +5,7 @@ from Enums.Keys import Keys
 from typing import Tuple
 from Game import Instance
 from direct.task.Task import Task
-
-from random import randint
+from random import randint as Rand
 
 class Weapon(Entity):
     
@@ -70,6 +69,18 @@ class Weapon(Entity):
         
         Self.BulletType(StartPosition = Self.world_position)
         
+    def DoRecoil(Self):
+        
+        Gvr = (Rand(20,25) / 10) * 1
+        Gdr = (Rand(-1, 1) * Rand(10,20) / 10) * 1
+        Glr = (Rand(15,20) ) * 1
+        Grr = (Rand(15,20) ) * 1
+        Ghr = (Rand(-Grr,Glr) / 10)
+        
+        WeaponRecoil = min(0.25, 1.5)
+
+        Self.RecoilVector = Vec3(Gvr * WeaponRecoil, Ghr * WeaponRecoil, Gdr * WeaponRecoil)
+        
     async def Shoot(Self):
         
         if Self.Magazine < 1:
@@ -91,10 +102,14 @@ class Weapon(Entity):
             Self.SpawnBullet()
 
             Self.Magazine -= 1
+            
+            Self.DoRecoil()
         
             await Task.pause(Self.ShootRate)
             
             Self.WeaponCooldown = False
+            
+            Self.RecoilVector = Vec3(0, 0, 0)
         
         elif Self.FireMode is FireModes.Burst_2:
             
@@ -107,12 +122,16 @@ class Weapon(Entity):
                 Self.WeaponCooldown = True
                 
                 Self.SpawnBullet()
+                
+                Self.DoRecoil()
 
                 Self.Magazine -= 1
                 
                 await Task.pause(Self.ShootRate)
                 
                 Self.WeaponCooldown = False
+                
+                Self.RecoilVector = Vec3(0, 0, 0)
             
         elif Self.FireMode is FireModes.Burst_3:
             
@@ -127,10 +146,14 @@ class Weapon(Entity):
                 Self.SpawnBullet()
 
                 Self.Magazine -= 1
+                
+                Self.DoRecoil()
 
                 await Task.pause(Self.ShootRate)
                 
                 Self.WeaponCooldown = False
+                
+                Self.RecoilVector = Vec3(0, 0, 0)
                 
         elif Self.FireMode is FireModes.Automatic:
             
@@ -142,16 +165,7 @@ class Weapon(Entity):
 
                 Self.Magazine -= 1
 
-                print(Self.Magazine, Self.ReserveAmmo, Self.MaxMagazineAmmo)
-
-                Gvr = (randint(20,25) / 10) * 1
-                Gdr = (randint(-1, 1) * randint(10,20) / 10) * 1
-                Glr = (randint(15,20)) * 1
-                Grr = (randint(15,20)) * 1
-                Ghr = (randint(-Grr,Glr) / 10)
-                WeaponRecoil = min(0.25, 1.5)
-
-                Self.RecoilVector = Vec3(Gvr * WeaponRecoil, Ghr * WeaponRecoil, Gdr * WeaponRecoil)
+                Self.DoRecoil()
 
                 await Task.pause(Self.ShootRate)
                 
@@ -221,7 +235,7 @@ class Weapon(Entity):
 
             Instance.taskMgr.add(Self.Reload() )
             
-    def update(Self):
+    def Update(Self, DeltaTime):
         
         if Self.Aimming and not Instance.FPSController.Running:
             
