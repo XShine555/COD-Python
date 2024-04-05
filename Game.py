@@ -1,4 +1,5 @@
 from ursina import Ursina, Vec3, time as Time, application as ApplicationInstance
+from ursina.window import instance as InstanceWindow
 from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock
 from ursina.main import keyboard_keys as KeyboardKeys
 from ursina.scene import instance as SceneInstance
@@ -31,19 +32,13 @@ class Game(Ursina):
         
         Debugger(Self.BulletWorld, wireframe=True)
         
-        Self.Gravity = Vec3(0, -9.81, 0)
+        Self.Gravity = Vec3(0, 0, -9.81)
         
         Self.BulletWorld.setGravity(Self.Gravity)
         
         Self.taskMgr.remove("update")
         
         Self.taskMgr.add(Self._UpdatePipeLine, "UpdatePipeLine")
-        
-        Self.taskMgr.add(Self._PhysicsPipeLine, "PipeLineRender")
-        
-        Self.FixedTimeStep = 1.0 / 60.0
-        
-        Self.PhysicsAccumulator = 0
 
         # Custom Mapping Keys
         
@@ -180,30 +175,14 @@ class Game(Ursina):
 
                     Entity.HandleInput(Self.SpecialWhiteListKeys[Key] )
                     
-    # Physics Update
-
-    def _PhysicsPipeLine(Self, Task):
-        
-        Self.PhysicsAccumulator += Time.dt
-        
-        while Self.PhysicsAccumulator >= Self.FixedTimeStep:
-            
-            Self.BulletWorld.doPhysics(Self.FixedTimeStep, 10)
-            
-            Self.PhysicsAccumulator -= Self.FixedTimeStep
-            
-            for Entity in SceneInstance.entities:
-                
-                 if hasattr(Entity, "PhysicsUpdate"):
-                     
-                    Entity.PhysicsUpdate()
-                    
-            return Task.cont
+    # Render Update
                     
     def _UpdatePipeLine(Self, Task):
             
+        Self.BulletWorld.doPhysics(Time.dt, 10, 1.0/180.0)
+
         Time.dt = GlobalClock.getDt() * ApplicationInstance.time_scale
-        
+
         Self.mouse.update()
         
         if hasattr(__main__, 'Update') and __main__.Update and not ApplicationInstance.paused:
@@ -223,6 +202,8 @@ class Game(Ursina):
             if hasattr(Entity, 'Update') and callable(Entity.Update):
                 
                 Entity.Update(Time.dt)
+
+            InstanceWindow.fps_counter.update()
             
         return Task.cont
 
@@ -234,9 +215,7 @@ class Game(Ursina):
             
             if Self.CurrentScene is not None:
                 
-                pass
-                
-                #Self.CurrentScene.DestroyScene()
+                Self.CurrentScene.DestroyScene()
             
             File = LoadFile(Name, F"{Self.SceneDirectory}/{Name}.py")
             
@@ -262,14 +241,4 @@ class Game(Ursina):
         
         Self.BulletWorld.setGravity(Self.Gravity)
 
-    def LimitFPS(Self, Limit):
-
-        GlobalClock.setMode(ClockObject.MLimited)
-
-        GlobalClock.setFrameRate(Limit)
-
-    def UnLimitFPS(Self):
-
-        GlobalClock.setMode(ClockObject.MNormal)
-        
 Instance = Game()

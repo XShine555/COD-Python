@@ -1,6 +1,6 @@
 from Scene import Scene
 from ursina import Entity
-from physics3d import BoxCollider
+from physics3d import BoxCollider, MeshCollider
 from Game import Instance
 
 from ursina import destroy
