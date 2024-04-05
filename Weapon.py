@@ -230,6 +230,6 @@ class Weapon(Entity):
         
         YAxis = Clamp(Instance.mouse.velocity.y * 10, -65, 65)
             
-        SwayTarget = Vec3(-YAxis, -XAxis, 0)
+        SwayTarget = Vec3(-YAxis, -XAxis, XAxis)
         
         Self.rotation = Lerp(Self.rotation, Self.rotation + SwayTarget, 0.8)
