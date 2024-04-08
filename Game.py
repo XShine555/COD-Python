@@ -17,7 +17,7 @@ from ursina.main import keyboard_keys as KeyboardKeys
 
 from Scene import Scene
 from math import floor
-from sys import maxsize as IntMaxValue
+from KeyMapper import KeyMapper
 
 import __main__
 
@@ -40,6 +40,8 @@ class Game(ShowBase):
         InstanceWindow.ready(Title, Icon,
             Borderless, Fullscreen, Size, ForcedAspectRatio, Position, VSync, "onscreen",
             EditorUiEnabled, RenderMode)
+        
+        Self.KeyMapper = KeyMapper()
 
         super().__init__(windowType = ApplicationSingleton.window_type)
         
@@ -250,7 +252,6 @@ class Game(ShowBase):
         if Self.ShowFPS:
             
             Self.FPS.text = F"FPS: {floor(1//Time.dt) }"
-            print(GlobalClock.get_average_frame_rate())
             
         return Task.cont
 

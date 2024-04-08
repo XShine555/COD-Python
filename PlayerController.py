@@ -5,6 +5,7 @@ from panda3d.bullet import BulletWorld
 from ursina import camera as StaticCamera
 from ursina import mouse as StaticMouse
 from Enums.Keys import Keys
+from Enums.Actions import Actions
 from Game import Instance
 
 class PlayerController(Entity):
@@ -107,15 +108,15 @@ class PlayerController(Entity):
         
     def HandleInput(Self, Key):
         
-        if Key == Keys.LeftShift and Self.CanRun:
+        if Key == Instance.KeyMapper.GetKey(Actions.Run) and Self.CanRun:
 
             Self.SetRunningState(True)
 
-        elif Key == Keys.LeftShiftUp:
+        elif Key == F"{Instance.KeyMapper.GetKey(Actions.Run) }_up":
 
             Self.SetRunningState(False)
             
-        elif Key == Keys.Space:
+        elif Key == Instance.KeyMapper.GetKey(Actions.Jump):
 
             if Self.Jumping:
                 
@@ -129,9 +130,9 @@ class PlayerController(Entity):
         
         Direction = Vec3(
             
-            Self.forward * (Instance.HeldKeys[Keys.W] - Instance.HeldKeys[Keys.S] )
+            Self.forward * (Instance.HeldKeys[Instance.KeyMapper.GetKey(Actions.Forward) ] - Instance.HeldKeys[Instance.KeyMapper.GetKey(Actions.Backward) ] )
             
-            + Self.right * (Instance.HeldKeys[Keys.D] - Instance.HeldKeys[Keys.A] )
+            + Self.right * (Instance.HeldKeys[Instance.KeyMapper.GetKey(Actions.Right) ] - Instance.HeldKeys[Instance.KeyMapper.GetKey(Actions.Left) ] )
             
         ).normalized()
         
