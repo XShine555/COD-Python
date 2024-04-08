@@ -19,6 +19,7 @@ from Scene import Scene
 from math import floor
 
 import __main__
+import pyautogui
 
 class Game(ShowBase):
     
@@ -301,7 +302,15 @@ class Game(ShowBase):
         Self.ShowFPS = False
         
     def Run(Self):
-        
         super().run()
+
+    def Fullscreen(Self):
+        InstanceWindow.borderless = False
+
+    def Borderless(Self):
+        InstanceWindow.borderless = True
+
+    def Windowed(Self):
+        InstanceWindow.borderless = False
 
 Instance = Game()
