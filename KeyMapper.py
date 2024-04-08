@@ -1,7 +1,7 @@
 from json import load as Loader, dump as Save
 from Enums.Keys import Keys
 from Enums.Actions import Actions
-from os import environ as Env, path as Path
+from os import environ as Env, path as Path, makedirs as Mkdir
 
 class KeyMapper():
     
@@ -15,7 +15,13 @@ class KeyMapper():
         
         Documents = Path.join(Env.get("UserProfile"), "Documents")
         
-        SavedFile = Path.join(Documents, "COD-Python", "KeyMap.Json")
+        SavePath = Path.join(Documents, "COD-Pythons")
+
+        if not Path.exists(SavePath):
+
+            Mkdir(SavePath)
+
+        SavedFile = Path.join(SavePath, "KeyMap.Json")
         
         try:
             

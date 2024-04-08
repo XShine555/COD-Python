@@ -317,13 +317,11 @@ class Game(ShowBase):
     def Windowed(Self):
         InstanceWindow.borderless = False
         
-    def ActivateVSync(Self, Value):
+    def ActivateVSync(Self):
         
         Self.VSync = True
         
-        GlobalClock.set_mode(ClockObject.MLimited)    
-        
-        GlobalClock.set_dt( (1/Value) )
+        GlobalClock.set_mode(ClockObject.MLimited)
         
     def DisableVSync(Self):
         
