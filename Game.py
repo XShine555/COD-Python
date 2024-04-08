@@ -3,7 +3,7 @@ from panda3d.bullet import BulletWorld
 from Enums.Keys import Keys
 from importlib.util import spec_from_file_location as LoadFile, module_from_spec as ModuleToSpec
 
-from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock
+from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock, ClockObject
 from direct.showbase.ShowBase import ShowBase
 from ursina.prefabs.hot_reloader import HotReloader
 
@@ -17,6 +17,7 @@ from ursina.main import keyboard_keys as KeyboardKeys
 
 from Scene import Scene
 from math import floor
+from sys import maxsize as IntMaxValue
 
 import __main__
 
@@ -27,6 +28,8 @@ class Game(ShowBase):
         # Init
         
         Self.ShowFPS = False
+        
+        Self.VSync = False
         
         ApplicationSingleton.window_type = "onscreen"
         ApplicationSingleton.base = Self
@@ -113,7 +116,7 @@ class Game(ShowBase):
         InstanceWindow.make_editor_gui()
         InstanceWindow.editor_ui.enabled = False
         InstanceWindow.borderless = False
-
+        
     # Private Functions
     
     # Keys Binding Functions
@@ -246,7 +249,8 @@ class Game(ShowBase):
             
         if Self.ShowFPS:
             
-            Self.FPS.text = F"FPS: {floor(GlobalClock.getAverageFrameRate() ) }"
+            Self.FPS.text = F"FPS: {floor(1//Time.dt) }"
+            print(GlobalClock.get_average_frame_rate())
             
         return Task.cont
 
@@ -311,5 +315,37 @@ class Game(ShowBase):
 
     def Windowed(Self):
         InstanceWindow.borderless = False
+        
+    def ActivateVSync(Self, Value):
+        
+        Self.VSync = True
+        
+        GlobalClock.set_mode(ClockObject.MLimited)    
+        
+        GlobalClock.set_dt( (1/Value) )
+        
+    def DisableVSync(Self):
+        
+        Self.VSync = False
+        
+        GlobalClock.set_mode(ClockObject.MNormal)
+        
+    def LimitFPS(Self, Value):
+        
+        if Self.VSync:
+            
+            return
+        
+        GlobalClock.set_mode(ClockObject.MIntegerLimited)
+        
+        GlobalClock.set_dt( (1/Value) )
+        
+    def UnLimitFPS(Self):
+        
+        if Self.VSync:
+            
+            return
+
+        GlobalClock.set_mode(ClockObject.MNormal)
 
 Instance = Game()

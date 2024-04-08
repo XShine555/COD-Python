@@ -13,4 +13,6 @@ Gun.parent = camera
 
 Instance.EnableShowFPS()
 
+Instance.UnLimitFPS()
+
 Instance.Run()
