@@ -2,6 +2,7 @@ from ursina import Entity, camera as InstanceCamera, Vec3, lerp as Lerp, clamp a
 from Bullet import Bullet
 from Enums.FireModes import FireModes
 from Enums.Keys import Keys
+from Enums.Actions import Actions
 from typing import Tuple
 from Game import Instance
 from direct.task.Task import Task
@@ -213,25 +214,25 @@ class Weapon(Entity):
         
     def HandleInput(Self, Key):
         
-        if Key is Keys.V:
+        if Key == Instance.KeyMapper.GetKey(Actions.ChangeFiremode):
             
             Self.CycleFireMode()
 
-        elif Key is Keys.LeftMouseDown:
+        elif Key == Instance.KeyMapper.GetKey(Actions.Shoot):
             
             Self.LeftMouseDown = True
 
             Instance.taskMgr.add(Self.Shoot() )
 
-        elif Key is Keys.LeftMouseUp:
+        elif Key == F"{Instance.KeyMapper.GetKey(Actions.Shoot) }_up":
 
             Self.LeftMouseDown = False
 
-        elif Key is Keys.RightMouseDown:
+        elif Key == Instance.KeyMapper.GetKey(Actions.Aim):
 
             Self.Aimming = not Self.Aimming
 
-        elif Key is Keys.R:
+        elif Key == Instance.KeyMapper.GetKey(Actions.Reload):
 
             Instance.taskMgr.add(Self.Reload() )
             

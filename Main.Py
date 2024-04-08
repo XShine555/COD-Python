@@ -11,4 +11,8 @@ Instance.FPSController = PlayerController(World = Instance.BulletWorld, model = 
 Gun = Glock17()
 Gun.parent = camera
 
-Instance.run()
+Instance.EnableShowFPS()
+
+Instance.UnLimitFPS()
+
+Instance.Run()

@@ -1,65 +1,101 @@
-from ursina import Ursina, Vec3, time as Time, application as ApplicationInstance
-from ursina.window import instance as InstanceWindow
-from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock
-from ursina.main import keyboard_keys as KeyboardKeys
-from ursina.scene import instance as SceneInstance
-from Scene import Scene
-from importlib.util import spec_from_file_location as LoadFile, module_from_spec as ModuleToSpec
+from collections import defaultdict as DefaultDict
 from panda3d.bullet import BulletWorld
 from Enums.Keys import Keys
-from collections import defaultdict as DefaultDict
-from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock
-from direct.showbase.ShowBaseGlobal import ClockObject
+from importlib.util import spec_from_file_location as LoadFile, module_from_spec as ModuleToSpec
+
+from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock, ClockObject
+from direct.showbase.ShowBase import ShowBase
+from ursina.prefabs.hot_reloader import HotReloader
+
+from ursina import application as ApplicationSingleton, Vec3, Vec2, time as Time, Text, entity as Entity
+from ursina.window import instance as InstanceWindow
+from ursina.camera import instance as InstanceCamera
+from ursina.mouse import instance as InstanceMouse
+from ursina.scene import instance as InstanceScene
+
+from ursina.main import keyboard_keys as KeyboardKeys
+
+from Scene import Scene
+from math import floor
+from KeyMapper import KeyMapper
+
 import __main__
 
-from physics3d import Debugger
-
-class Game(Ursina):
+class Game(ShowBase):
     
-    def __init__(Self, **KWargs):
+    def __init__(Self, Title = 'COD-Python', Icon = '', Borderless = True, Fullscreen = False, Size = None, ForcedAspectRatio = None, Position = None, VSync = True, EditorUiEnabled = True, DevelopmentMode = False, RenderMode = None):
 
-        super().__init__(**KWargs)
+        # Init
+        
+        Self.ShowFPS = False
+        
+        Self.VSync = False
+        
+        ApplicationSingleton.window_type = "onscreen"
+        ApplicationSingleton.base = Self
+        ApplicationSingleton.development_mode = DevelopmentMode
+        ApplicationSingleton.show_ursina_splash = False
+        Entity._warn_if_ursina_not_instantiated = False
+        
+        InstanceWindow.ready(Title, Icon,
+            Borderless, Fullscreen, Size, ForcedAspectRatio, Position, VSync, "onscreen",
+            EditorUiEnabled, RenderMode)
+        
+        Self.KeyMapper = KeyMapper()
+
+        super().__init__(windowType = ApplicationSingleton.window_type)
+        
+        InstanceWindow.apply_settings()
+        
+        InstanceCamera._cam = Self.camera
+        InstanceCamera._cam.reparent_to(InstanceCamera)
+        InstanceCamera.render = Self.render
+        InstanceCamera.position = (0, 0, -20)
+        InstanceScene.camera = InstanceCamera
+        InstanceCamera.set_up()
+        
+        Self.disableMouse()
+        InstanceMouse._mouse_watcher = Self.mouseWatcherNode
+        InstanceMouse.enabled = True
+        Self.mouse = InstanceMouse
         
         Self.CurrentScene : Scene = None
-        
         Self.SceneName = None
-        
         Self.SceneDirectory = "Scenes"
+        
+        InstanceScene.set_up()
         
         # Physics
         
         Self.BulletWorld = BulletWorld()
-        
-        Debugger(Self.BulletWorld, wireframe=True)
-        
         Self.Gravity = Vec3(0, 0, -9.81)
-        
         Self.BulletWorld.setGravity(Self.Gravity)
         
         Self.taskMgr.remove("update")
-        
         Self.taskMgr.add(Self._UpdatePipeLine, "UpdatePipeLine")
 
         # Custom Mapping Keys
-        
-        for Mode in ('buttonDown', 'buttonUp', 'buttonHold', 'keystroke'):
-
-            Self.ignore(Mode)
 
         Self.buttonThrowers[0].node().setButtonUpEvent('ButtonUp')
-
         Self.buttonThrowers[0].node().setButtonDownEvent('ButtonDown')
-
         Self.buttonThrowers[0].node().setRawButtonUpEvent('RawKeyUp')
-
         Self.buttonThrowers[0].node().setRawButtonDownEvent('RawKeyDown')
+                    
+        Self.InputNameChanges = {
+            'mouse1' : 'left mouse down', 'mouse1 up' : 'left mouse up', 'mouse2' : 'middle mouse down', 'mouse2 up' : 'middle mouse up', 'mouse3' : 'right mouse down', 'mouse3 up' : 'right mouse up',
+            'wheel_up' : 'scroll up', 'wheel_down' : 'scroll down',
+            'arrow_left' : 'left arrow', 'arrow_left up' : 'left arrow up', 'arrow_up' : 'up arrow', 'arrow_up up' : 'up arrow up', 'arrow_down' : 'down arrow', 'arrow_down up' : 'down arrow up', 'arrow_right' : 'right arrow', 'arrow_right up' : 'right arrow up',
+            'lcontrol' : 'left control', 'rcontrol' : 'right control', 'lshift' : 'left shift', 'rshift' : 'right shift', 'lalt' : 'left alt', 'ralt' : 'right alt',
+            'lcontrol up' : 'left control up', 'rcontrol up' : 'right control up', 'lshift up' : 'left shift up', 'rshift up' : 'right shift up', 'lalt up' : 'left alt up', 'ralt up' : 'right alt up',
+            'control-mouse1' : 'left mouse down', 'control-mouse2' : 'middle mouse down', 'control-mouse3' : 'right mouse down',
+            'shift-mouse1' : 'left mouse down', 'shift-mouse2' : 'middle mouse down', 'shift-mouse3' : 'right mouse down',
+            'alt-mouse1' : 'left mouse down', 'alt-mouse2' : 'middle mouse down', 'alt-mouse3' : 'right mouse down',
+            'page_down' : 'page down', 'page_down up' : 'page down up', 'page_up' : 'page up', 'page_up up' : 'page up up',
+        }
 
         Self.accept('ButtonUp', Self._ButtonUp)
-
         Self.accept('ButtonDown', Self._ButtonDown)
-
         Self.accept('RawKeyUp', Self._RawKeyUp)
-
         Self.accept('RawKeyDown', Self._RawKeyDown)
 
         Self.HeldKeys = DefaultDict(lambda: 0)
@@ -74,7 +110,15 @@ class Game(Ursina):
             'mouse3' : Keys.RightMouseDown, 
             'mouse3 up' : Keys.RightMouseUp
         }
-
+        
+        ApplicationSingleton.load_settings()
+        
+        ApplicationSingleton.hot_reloader = HotReloader(__main__.__file__ if hasattr(__main__, '__file__') else 'None')
+        
+        InstanceWindow.make_editor_gui()
+        InstanceWindow.editor_ui.enabled = False
+        InstanceWindow.borderless = False
+        
     # Private Functions
     
     # Keys Binding Functions
@@ -91,9 +135,9 @@ class Game(Ursina):
 
                     break
 
-        if Key in Self._input_name_changes:
+        if Key in Self.InputNameChanges:
 
-            Key = Self._input_name_changes[Key]
+            Key = Self.InputNameChanges[Key]
 
         return Key
 
@@ -103,15 +147,15 @@ class Game(Ursina):
 
         Self.HeldKeys[SanitizeKey] = 0
 
-        if Key in Self._input_name_changes:
+        if Key in Self.InputNameChanges:
 
-            for Entity in SceneInstance.entities:
+            for Entity in InstanceScene.entities:
                 
                 if not Entity.enabled or Entity.ignore or Entity.ignore_input:
                     
                     continue
                 
-                if ApplicationInstance.paused and not Entity.ignore_paused:
+                if ApplicationSingleton.paused and not Entity.ignore_paused:
                     
                     continue
 
@@ -125,13 +169,13 @@ class Game(Ursina):
 
         Self.HeldKeys[SanitizeKey] = 1
 
-        for Entity in SceneInstance.entities:
+        for Entity in InstanceScene.entities:
             
             if not Entity.enabled or Entity.ignore or Entity.ignore_input:
                     
                     continue
                 
-            if ApplicationInstance.paused and not Entity.ignore_paused:
+            if ApplicationSingleton.paused and not Entity.ignore_paused:
                     
                 continue
 
@@ -143,13 +187,13 @@ class Game(Ursina):
 
         if Key in Self.SpecialWhiteListKeys:
 
-            for Entity in SceneInstance.entities:
+            for Entity in InstanceScene.entities:
                 
                 if not Entity.enabled or Entity.ignore or Entity.ignore_input:
                     
                     continue
                 
-                if ApplicationInstance.paused and not Entity.ignore_paused:
+                if ApplicationSingleton.paused and not Entity.ignore_paused:
                     
                     continue
 
@@ -161,13 +205,13 @@ class Game(Ursina):
         
         if Key in Self.SpecialWhiteListKeys:
 
-            for Entity in SceneInstance.entities:
+            for Entity in InstanceScene.entities:
                 
                 if not Entity.enabled or Entity.ignore or Entity.ignore_input:
                     
                     continue
                 
-                if ApplicationInstance.paused and not Entity.ignore_paused:
+                if ApplicationSingleton.paused and not Entity.ignore_paused:
                     
                     continue
 
@@ -181,21 +225,21 @@ class Game(Ursina):
             
         Self.BulletWorld.doPhysics(Time.dt, 10, 1.0/180.0)
 
-        Time.dt = GlobalClock.getDt() * ApplicationInstance.time_scale
+        Time.dt = GlobalClock.getDt() * ApplicationSingleton.time_scale
 
         Self.mouse.update()
         
-        if hasattr(__main__, 'Update') and __main__.Update and not ApplicationInstance.paused:
+        if hasattr(__main__, 'Update') and __main__.Update and not ApplicationSingleton.paused:
 
             __main__.Update(Time.dt)
             
-        for Entity in SceneInstance.entities:
+        for Entity in InstanceScene.entities:
             
             if not Entity.enabled or Entity.ignore:
                 
                 continue
 
-            if ApplicationInstance.paused and not Entity.ignore_paused:
+            if ApplicationSingleton.paused and not Entity.ignore_paused:
                 
                 continue
 
@@ -204,6 +248,10 @@ class Game(Ursina):
                 Entity.Update(Time.dt)
 
             InstanceWindow.fps_counter.update()
+            
+        if Self.ShowFPS:
+            
+            Self.FPS.text = F"FPS: {floor(1//Time.dt) }"
             
         return Task.cont
 
@@ -240,5 +288,65 @@ class Game(Ursina):
         Self.Gravity = Gravity
         
         Self.BulletWorld.setGravity(Self.Gravity)
+        
+    def EnableShowFPS(Self):
+        
+        if Self.ShowFPS:
+            
+            return
+        
+        Self.FPS = Text(origin = Vec2(-9, -19) )
+        
+        Self.ShowFPS = True
+        
+    def DisableShowFPS(Self):
+        
+        Self.FPS = None
+        
+        Self.ShowFPS = False
+        
+    def Run(Self):
+        super().run()
+
+    def Fullscreen(Self):
+        InstanceWindow.borderless = False
+
+    def Borderless(Self):
+        InstanceWindow.borderless = True
+
+    def Windowed(Self):
+        InstanceWindow.borderless = False
+        
+    def ActivateVSync(Self, Value):
+        
+        Self.VSync = True
+        
+        GlobalClock.set_mode(ClockObject.MLimited)    
+        
+        GlobalClock.set_dt( (1/Value) )
+        
+    def DisableVSync(Self):
+        
+        Self.VSync = False
+        
+        GlobalClock.set_mode(ClockObject.MNormal)
+        
+    def LimitFPS(Self, Value):
+        
+        if Self.VSync:
+            
+            return
+        
+        GlobalClock.set_mode(ClockObject.MIntegerLimited)
+        
+        GlobalClock.set_dt( (1/Value) )
+        
+    def UnLimitFPS(Self):
+        
+        if Self.VSync:
+            
+            return
+
+        GlobalClock.set_mode(ClockObject.MNormal)
 
 Instance = Game()
