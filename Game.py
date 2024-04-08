@@ -3,11 +3,11 @@ from panda3d.bullet import BulletWorld
 from Enums.Keys import Keys
 from importlib.util import spec_from_file_location as LoadFile, module_from_spec as ModuleToSpec
 
-from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock, ClockObject
+from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock
 from direct.showbase.ShowBase import ShowBase
 from ursina.prefabs.hot_reloader import HotReloader
 
-from ursina import application as ApplicationSingleton, Vec3, Vec2, time as Time, Text
+from ursina import application as ApplicationSingleton, Vec3, Vec2, time as Time, Text, entity as Entity
 from ursina.window import instance as InstanceWindow
 from ursina.camera import instance as InstanceCamera
 from ursina.mouse import instance as InstanceMouse
@@ -22,17 +22,25 @@ import __main__
 
 class Game(ShowBase):
     
-    def __init__(Self):
+    def __init__(Self, Title = 'COD-Python', Icon = '', Borderless = True, Fullscreen = False, Size = None, ForcedAspectRatio = None, Position = None, VSync = True, EditorUiEnabled = True, DevelopmentMode = False, RenderMode = None):
 
         # Init
         
-        ApplicationSingleton.base = Self
-
         Self.ShowFPS = False
-
-        super().__init__()
         
-        InstanceWindow.late_init()
+        ApplicationSingleton.window_type = "onscreen"
+        ApplicationSingleton.base = Self
+        ApplicationSingleton.development_mode = DevelopmentMode
+        ApplicationSingleton.show_ursina_splash = False
+        Entity._warn_if_ursina_not_instantiated = False
+        
+        InstanceWindow.ready(Title, Icon,
+            Borderless, Fullscreen, Size, ForcedAspectRatio, Position, VSync, "onscreen",
+            EditorUiEnabled, RenderMode)
+
+        super().__init__(windowType = ApplicationSingleton.window_type)
+        
+        InstanceWindow.apply_settings()
         
         InstanceCamera._cam = Self.camera
         InstanceCamera._cam.reparent_to(InstanceCamera)
@@ -62,16 +70,12 @@ class Game(ShowBase):
         Self.taskMgr.add(Self._UpdatePipeLine, "UpdatePipeLine")
 
         # Custom Mapping Keys
-        
-        for Mode in ('buttonDown', 'buttonUp', 'buttonHold', 'keystroke'):
-
-            Self.ignore(Mode)
 
         Self.buttonThrowers[0].node().setButtonUpEvent('ButtonUp')
         Self.buttonThrowers[0].node().setButtonDownEvent('ButtonDown')
         Self.buttonThrowers[0].node().setRawButtonUpEvent('RawKeyUp')
         Self.buttonThrowers[0].node().setRawButtonDownEvent('RawKeyDown')
-        
+                    
         Self.InputNameChanges = {
             'mouse1' : 'left mouse down', 'mouse1 up' : 'left mouse up', 'mouse2' : 'middle mouse down', 'mouse2 up' : 'middle mouse up', 'mouse3' : 'right mouse down', 'mouse3 up' : 'right mouse up',
             'wheel_up' : 'scroll up', 'wheel_down' : 'scroll down',
@@ -281,6 +285,10 @@ class Game(ShowBase):
         Self.BulletWorld.setGravity(Self.Gravity)
         
     def EnableShowFPS(Self):
+        
+        if Self.ShowFPS:
+            
+            return
         
         Self.FPS = Text(origin = Vec2(-9, -19) )
         
