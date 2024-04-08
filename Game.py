@@ -10,7 +10,7 @@ from ursina.prefabs.hot_reloader import HotReloader
 from ursina import application as ApplicationSingleton, Vec3, Vec2, time as Time, Text, entity as Entity
 from ursina.window import instance as InstanceWindow
 from ursina.camera import instance as InstanceCamera
-from ursina.mouse import instance as Instanc0eMouse
+from ursina.mouse import instance as InstanceMouse
 from ursina.scene import instance as InstanceScene
 
 from ursina.main import keyboard_keys as KeyboardKeys
