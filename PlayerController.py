@@ -2,13 +2,14 @@ from ursina import Entity, Vec3
 from ursina import clamp as Clamp
 from physics3d.character_controller import CharacterController
 from panda3d.bullet import BulletWorld
-from ursina import held_keys as HeldKeys
 from ursina import camera as StaticCamera
 from ursina import mouse as StaticMouse
+from Enums.Keys import Keys
+from Game import Instance
 
 class PlayerController(Entity):
 
-    def __init__(Self, World : BulletWorld, Height = 10, Fov = 85, **KWArgs):
+    def __init__(Self, World : BulletWorld, StandardFov = 80, Height = 10, Fov = 85, RunVelocity = 24, WalkVelocity = 14, **KWArgs):
 
         super().__init__(**KWArgs)
 
@@ -16,11 +17,21 @@ class PlayerController(Entity):
 
         Self.Controller = CharacterController(World, Self)
 
-        Self.Velocity = 14
+        Self.WalkVelocity = WalkVelocity
+        
+        Self.RunVelocity = RunVelocity
+
+        Self.Velocity = Self.WalkVelocity
         
         Self.Height = Height
         
         Self.CameraPivot = Entity(parent = Self, y = Height)
+        
+        Self.Running = False
+
+        Self.CanRun = True
+        
+        Self.Jumping = not Self.Controller.can_jump
         
         # Camera
         
@@ -60,11 +71,19 @@ class PlayerController(Entity):
         
     def SetCameraDistance(Self, Value):
         
-        StaticCamera.z_setter(Value)
+        StaticCamera.z = Value
         
     def SetFov(Self, Value):
         
         StaticCamera.fov = Value
+        
+    def AddFov(Self, Value):
+        
+        StaticCamera.fov += Value
+        
+    def RemoveFov(Self, Value):
+        
+        StaticCamera.fov -= Value
         
     def SetFirstPerson(Self):
         
@@ -73,16 +92,46 @@ class PlayerController(Entity):
     def SetThirdPerson(Self):
         
         Self.SetCameraDistance(-10)
+
+    def SetRunningState(Self, Running):
+
+        Self.Running = Running
+
+        if Self.Running:
+
+            Self.Velocity = Self.RunVelocity
+
+        else:
+
+            Self.Velocity = Self.WalkVelocity
         
-    def update(Self):
+    def HandleInput(Self, Key):
+        
+        if Key == Keys.LeftShift and Self.CanRun:
+
+            Self.SetRunningState(True)
+
+        elif Key == Keys.LeftShiftUp:
+
+            Self.SetRunningState(False)
+            
+        elif Key == Keys.Space:
+
+            if Self.Jumping:
+                
+                return
+            
+            Self.Jump()
+
+    def Update(Self, DeltaTime):
         
         # Player Movement
         
         Direction = Vec3(
             
-            Self.forward * (HeldKeys['w'] - HeldKeys['s'] )
+            Self.forward * (Instance.HeldKeys[Keys.W] - Instance.HeldKeys[Keys.S] )
             
-            + Self.right * (HeldKeys['d'] - HeldKeys['a'] )
+            + Self.right * (Instance.HeldKeys[Keys.D] - Instance.HeldKeys[Keys.A] )
             
         ).normalized()
         

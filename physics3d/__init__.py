@@ -15,7 +15,8 @@ class Collider(RigidBodyNode):
         self.addShape(shape)
         self.np = application.base.render.attachNewNode(self)
 
-        world.attachRigidBody(self)
+        self.world = world
+        self.world.attachRigidBody(self)
 
         if entity.parent:
             self.np.reparent_to(entity.parent)
@@ -29,6 +30,18 @@ class Collider(RigidBodyNode):
         self.np.setPos(entity.x, entity.y, entity.z)
         entity.reparent_to(self.np)
     
+    def Enable(self):
+        self.world.attachRigidBody(self)
+        self.set_active(True)
+
+    def Disable(self):
+        self.world.remove(self)
+        self.set_active(False)
+
+    @property
+    def IsEnabled(self):
+        return self.is_active()
+
     @property
     def position(self):
         return self.np.getPos()
