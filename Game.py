@@ -73,6 +73,7 @@ class Game(ShowBase):
         
         Self.taskMgr.remove("update")
         Self.taskMgr.add(Self._UpdatePipeLine, "UpdatePipeLine")
+        Self.taskMgr.add(Self._UpdatePhysics, "UpdatePhysics")
 
         # Custom Mapping Keys
 
@@ -118,6 +119,10 @@ class Game(ShowBase):
         InstanceWindow.make_editor_gui()
         InstanceWindow.editor_ui.enabled = False
         InstanceWindow.borderless = False
+        
+        Self._FixedTimeStep = (1/60)
+        
+        Self._PhysicsAccumulator = 0
         
     # Private Functions
     
@@ -222,8 +227,6 @@ class Game(ShowBase):
     # Render Update
                     
     def _UpdatePipeLine(Self, Task):
-            
-        Self.BulletWorld.doPhysics(Time.dt, 10, 1.0/180.0)
 
         Time.dt = GlobalClock.getDt() * ApplicationSingleton.time_scale
 
@@ -252,6 +255,18 @@ class Game(ShowBase):
         if Self.ShowFPS:
             
             Self.FPS.text = F"FPS: {floor(1//Time.dt) }"
+            
+        return Task.cont
+    
+    def _UpdatePhysics(Self, Task):
+        
+        Self._PhysicsAccumulator += Time.dt
+
+        if Self._PhysicsAccumulator >= Self._FixedTimeStep:
+            
+            Self.BulletWorld.doPhysics(Time.dt, 10, 1.0/180.0)
+            
+            Self._PhysicsAccumulator -= Self._FixedTimeStep
             
         return Task.cont
 
