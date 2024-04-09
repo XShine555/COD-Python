@@ -96,6 +96,10 @@ class Weapon(Entity):
 
             return
         
+        if Self.WeaponCooldown:
+
+            return
+        
         Self.WeaponCooldown = True
         
         if Self.FireMode is FireModes.SemiAutomatic:
@@ -224,7 +228,7 @@ class Weapon(Entity):
 
             Instance.taskMgr.add(Self.Shoot() )
 
-        elif Key == F"{Instance.KeyMapper.GetKey(Actions.Shoot) }_up":
+        elif Key == F"{Instance.KeyMapper.GetKey(Actions.Shoot) }_up" or Instance.KeyMapper.GetKey(Actions.Shoot).replace('down', 'up'):
 
             Self.LeftMouseDown = False
 
