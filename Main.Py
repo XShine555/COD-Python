@@ -7,12 +7,12 @@ from Game import Instance
 Instance.LoadScene("Town")
 #Instance.LoadScene("Casa")
 
-Instance.FPSController = PlayerController(World = Instance.BulletWorld, model = "cube", Height=2)
+Instance.FPSController = PlayerController(World = Instance.BulletWorld, model = "cube", Height = 4, collider = 'box')
 Gun = Glock17()
 Gun.parent = camera
 
 Instance.EnableShowFPS()
 
-Instance.UnLimitFPS()
+Instance.LimitFPS(60)
 
 Instance.Run()

@@ -68,7 +68,7 @@ class Weapon(Entity):
         
     def SpawnBullet(Self):
         
-        Self.BulletType(StartPosition = Self.world_position)
+        Self.BulletType(StartPosition = InstanceCamera.world_position)
         
     def DoRecoil(Self):
         
@@ -93,6 +93,10 @@ class Weapon(Entity):
             return
         
         if Self.Reloading:
+
+            return
+        
+        if Self.WeaponCooldown:
 
             return
         
@@ -176,6 +180,8 @@ class Weapon(Entity):
 
     async def Reload(Self):
 
+        print("Reloading")
+
         if Self.Reloading:
 
             return
@@ -218,24 +224,24 @@ class Weapon(Entity):
             
             Self.CycleFireMode()
 
-        elif Key == Instance.KeyMapper.GetKey(Actions.Shoot):
+        if Key == Instance.KeyMapper.GetKey(Actions.Shoot):
             
             Self.LeftMouseDown = True
 
             Instance.taskMgr.add(Self.Shoot() )
 
-        elif Key == F"{Instance.KeyMapper.GetKey(Actions.Shoot) }_up":
+        elif Key == F"{Instance.KeyMapper.GetKey(Actions.Shoot) }_up" or Instance.KeyMapper.GetKey(Actions.Shoot).replace('down', 'up'):
 
             Self.LeftMouseDown = False
 
-        elif Key == Instance.KeyMapper.GetKey(Actions.Aim):
+        if Key == Instance.KeyMapper.GetKey(Actions.Aim):
 
             Self.Aimming = not Self.Aimming
 
-        elif Key == Instance.KeyMapper.GetKey(Actions.Reload):
-
-            Instance.taskMgr.add(Self.Reload() )
+        if Key == Instance.KeyMapper.GetKey(Actions.Reload):
             
+            Instance.taskMgr.add(Self.Reload() )
+
     def Update(Self, DeltaTime):
         
         if Self.Aimming and not Instance.FPSController.Running:
