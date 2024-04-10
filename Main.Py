@@ -16,8 +16,7 @@ Gun.parent = InstanceCamera
 
 Instance.Menu = MainMenu()
 Instance.Menu.menu2()
-Instance.Menu.button3.on_click = Instance.Menu.menu2
-Instance.Menu.button4.on_click = application.quit
+
 
 Instance.EnableShowFPS()
 

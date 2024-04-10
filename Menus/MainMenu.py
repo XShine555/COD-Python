@@ -9,6 +9,8 @@ class MainMenu (Entity):
         self.buttons_enabled = False
         self.button3 = Button(text="Zombies", color=color.red, scale=(0.6, 0.1), position=(0, 0.1),enabled = False)
         self.button4 = Button(text="Exit", color=color.black, scale=(0.6, 0.1), position=(0, -0.1), enabled = False)
+        self.button3.on_click = self.menu2
+        self.button4.on_click = application.quit
         #self.pause_handler = Entity(ignore_paused=True, input=self.inputmenu)
         #self.button3.on_click = self.button3cllick
 
