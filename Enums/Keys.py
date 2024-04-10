@@ -99,3 +99,4 @@ class Keys():
     X = 'x'
     Y = 'y'
     Z = 'z'
+    SemiColon = ";"
