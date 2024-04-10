@@ -7,7 +7,7 @@ from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock, ClockObje
 from direct.showbase.ShowBase import ShowBase
 from ursina.prefabs.hot_reloader import HotReloader
 
-from ursina import application as ApplicationSingleton, Vec3, Vec2, time as Time, Text, entity as Entity
+from ursina import application as ApplicationSingleton, Vec3, Vec2, time as Time, Text, entity as Entity, Ursina
 from ursina.window import instance as InstanceWindow
 from ursina.camera import instance as InstanceCamera
 from ursina.mouse import instance as InstanceMouse
@@ -116,6 +116,8 @@ class Game(ShowBase):
         
         ApplicationSingleton.hot_reloader = HotReloader(__main__.__file__ if hasattr(__main__, '__file__') else 'None')
         
+        ApplicationSingleton.base.input = Self._ButtonDown
+        
         InstanceWindow.make_editor_gui()
         InstanceWindow.editor_ui.enabled = False
         InstanceWindow.borderless = False
@@ -223,6 +225,8 @@ class Game(ShowBase):
                 if hasattr(Entity, "HandleInput"):
 
                     Entity.HandleInput(Self.SpecialWhiteListKeys[Key] )
+
+            InstanceMouse.input(Self.SpecialWhiteListKeys[Key] )
                     
     # Render Update
                     
