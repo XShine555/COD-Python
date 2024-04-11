@@ -19,4 +19,4 @@ class Town(Scene):
         Self.GroundCollider = BoxCollider(Instance.BulletWorld, Self.Ground)
         Self.GroundCollider.y = -1
 
-        #Self.Model = Entity(model = 'Models/testeo.obj', parent = Self, scale = .2)
+        Self.Model = Entity(model = 'Models/testeo.obj', parent = Self, scale = .2)
