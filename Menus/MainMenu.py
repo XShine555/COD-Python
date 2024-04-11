@@ -3,6 +3,11 @@ from Game import Instance
 from ursina.mouse import instance as InstanceMouse
 from ursina import color, Vec2, Vec3, Button, Entity, application
 
+from ursina.window import instance as InstanceWindow
+
+from panda3d.core import WindowProperties
+from ursina import application as SingletonApplication
+
 class MainMenu (Entity):
     def __init__(self, add_to_scene_entities=True, **kwargs):
         super().__init__(add_to_scene_entities, ignore_paused=True, **kwargs)
@@ -21,7 +26,14 @@ class MainMenu (Entity):
         Instance.FPSController.CameraPivot.enabled_setter(not Instance.FPSController.CameraPivot.enabled)
         Instance.EditorCamera.enabled_setter(not Instance.FPSController.CameraPivot.enabled)
         Instance.EditorCamera.position_setter(Vec3(1, 2, 1) )
-        InstanceMouse.locked = Instance.FPSController.CameraPivot.enabled
+        #InstanceMouse.visible = not Instance.FPSController.CameraPivot.enabled
+        #SingletonApplication.base.transitions.fadeScreen()
+        #InstanceWindow.setCursorHidden(not Instance.FPSController.CameraPivot.enabled)
+        #SingletonApplication.base.win.requestProperties(InstanceWindow)
+        a = WindowProperties()
+        a.setCursorHidden(Instance.FPSController.CameraPivot.enabled)
+        SingletonApplication.base.win.requestProperties(a)
+        InstanceMouse._locked = Instance.FPSController.CameraPivot.enabled
         InstanceMouse.position = Vec2(0,0)
         self.button3.enabled = self.buttons_enabled
         self.button4.enabled = self.buttons_enabled
