@@ -9,13 +9,12 @@ Instance.LoadScene("Town")
 #Instance.LoadScene("Casa")
 
 Instance.FPSController = PlayerController(World = Instance.BulletWorld, model = "cube", Height = 4, collider = 'box')
-Instance.EditorCamera = EditorCamera()
 
 Gun = Glock17()
 Gun.parent = InstanceCamera
 
 Instance.Menu = MainMenu()
-Instance.Menu.menu2()
+#Instance.Menu.Trigger()
 
 
 Instance.EnableShowFPS()

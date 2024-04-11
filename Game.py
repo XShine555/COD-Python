@@ -1,5 +1,6 @@
 from collections import defaultdict as DefaultDict
 from panda3d.bullet import BulletWorld
+from panda3d.core import WindowProperties
 from Enums.Keys import Keys
 from importlib.util import spec_from_file_location as LoadFile, module_from_spec as ModuleToSpec
 
@@ -7,7 +8,7 @@ from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock, ClockObje
 from direct.showbase.ShowBase import ShowBase
 from ursina.prefabs.hot_reloader import HotReloader
 
-from ursina import application as ApplicationSingleton, Vec3, Vec2, time as Time, Text, entity as Entity, Ursina
+from ursina import application as ApplicationSingleton, Vec3, Vec2, time as Time, Text, entity as Entity
 from ursina.window import instance as InstanceWindow
 from ursina.camera import instance as InstanceCamera
 from ursina.mouse import instance as InstanceMouse
@@ -264,6 +265,10 @@ class Game(ShowBase):
     
     def _UpdatePhysics(Self, Task):
         
+        if ApplicationSingleton.paused:
+            
+            return Task.cont
+        
         Self._PhysicsAccumulator += Time.dt
 
         if Self._PhysicsAccumulator >= Self._FixedTimeStep:
@@ -365,5 +370,20 @@ class Game(ShowBase):
             return
 
         GlobalClock.set_mode(ClockObject.MNormal)
+        
+    def ShowMouse(Self, Value):
+        
+        Window = WindowProperties()
+        
+        Window.setCursorHidden(Value)
+        
+        ApplicationSingleton.base.win.requestProperties(Window)
+        
+    def LockMouse(Self, Value):
+        
+        InstanceMouse._locked = Value
+        
+        InstanceMouse.position = Vec2(0, 0)
+        
 
 Instance = Game()
