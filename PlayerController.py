@@ -38,7 +38,7 @@ class PlayerController(Entity):
         
         Self.SetFirstPerson()
         
-        Self.SetFov(Fov)
+        Self.SetFov(StandardFov)
         
         StaticCamera.parent = Self.CameraPivot
         
