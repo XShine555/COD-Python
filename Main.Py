@@ -7,13 +7,13 @@ from Menus.MainMenu import MainMenu
 from Menus.PauseInGame import PauseInGame
 from Enums.Keys import Keys
 
-Instance.LoadScene("Town")
+A = Instance.LoadSceneSafely("Town")
 #Instance.LoadScene("Casa")
 
-Instance.FPSController = PlayerController(World = Instance.BulletWorld, model = "cube", Height = 4, collider = 'box')
+#Instance.FPSController = PlayerController(World = Instance.BulletWorld, model = "cube", Height = 4, collider = 'box')
 
-Gun = Glock17()
-Gun.parent = InstanceCamera
+#Gun = Glock17()
+#Gun.parent = InstanceCamera
 
 Instance.MainMenu = MainMenu()
 Instance.MainMenu.Trigger()

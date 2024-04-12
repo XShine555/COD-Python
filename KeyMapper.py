@@ -3,15 +3,10 @@ from Enums.Keys import Keys
 from Enums.Actions import Actions
 from os import environ as Env, path as Path, makedirs as Mkdir
 
-class KeyMapper():
+class KeyMapper:
     
-    def __init__(Self):
-        
-        Self.KeyMap = Self.SearchFile()
-        
-        pass
-    
-    def SearchFile(Self):
+    @staticmethod
+    def SearchFile():
         
         Documents = Path.join(Env.get("UserProfile"), "Documents")
         
@@ -84,7 +79,9 @@ class KeyMapper():
                             
             return Load
             
-            
-    def GetKey(Self, Action):
+    @staticmethod
+    def GetKey(Action):
         
-        return Self.KeyMap[Action]
+        return KeyMap[Action]
+    
+KeyMapper.KeyMap = KeyMapper.SearchFile()

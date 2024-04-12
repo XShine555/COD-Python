@@ -18,7 +18,9 @@ from ursina.main import keyboard_keys as KeyboardKeys
 
 from Scene import Scene
 from math import floor
-from KeyMapper import KeyMapper
+from PlayerController import Instance
+
+from os import walk as Cd
 
 import __main__
 
@@ -41,8 +43,6 @@ class Game(ShowBase):
         InstanceWindow.ready(Title, Icon,
             Borderless, Fullscreen, Size, ForcedAspectRatio, Position, VSync, "onscreen",
             EditorUiEnabled, RenderMode)
-        
-        Self.KeyMapper = KeyMapper()
 
         super().__init__(windowType = ApplicationSingleton.window_type)
         
@@ -126,6 +126,10 @@ class Game(ShowBase):
         Self._FixedTimeStep = (1/60)
         
         Self._PhysicsAccumulator = 0
+
+        Self.FPSController = None
+        Self.PlayerPoints = 0
+        Self.Round = 1
         
     # Private Functions
     
@@ -281,32 +285,52 @@ class Game(ShowBase):
 
     # Public Functions
         
-    def LoadScene(Self, Name):
-        
+    def GetScenes(Self):
+
+        AvailableScenes = []
+
+        for Root, Dirs, Files in Cd(Self.SceneDirectory):
+
+            for File in Files:
+
+                if File.lower().endswith(".py"):
+
+                    AvailableScenes.append(File)
+
+        return AvailableScenes
+
+    def LoadSceneSafely(Self, Name):
+
+        SceneToLoad = None
+
         try:
-            
-            if Self.CurrentScene is not None:
-                
-                Self.CurrentScene.DestroyScene()
-            
+
             File = LoadFile(Name, F"{Self.SceneDirectory}/{Name}.py")
+
+            Class = ModuleToSpec(File)
             
-            File_Class = ModuleToSpec(File)
-            
-            File.loader.exec_module(File_Class)
-            
-            Scene_Class = getattr(File_Class, Name)
-            
-            Self.CurrentScene = Scene_Class()
-            
-            Self.SceneName = Name
-            
-            Self.CurrentScene.EnableScene()
-            
-        except FileNotFoundError:
-            
-            print("File Not Found")
+            File.loader.exec_module(Class)
+
+            SceneToLoad = getattr(Class, Name)
         
+        except FileNotFoundError:
+
+            print("File Not Found")
+
+            return False
+        
+        if Self.CurrentScene is not None:
+                
+            Self.CurrentScene.DestroyScene()
+
+        Self.CurrentScene = SceneToLoad()
+
+        Self.SceneName = Name
+
+        Self.CurrentScene.EnableScene()
+
+        return True
+
     def SetGravity(Self, Gravity):
         
         Self.Gravity = Gravity
@@ -384,6 +408,5 @@ class Game(ShowBase):
         InstanceMouse._locked = Value
         
         InstanceMouse.position = Vec2(0, 0)
-        
 
 Instance = Game()

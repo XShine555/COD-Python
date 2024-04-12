@@ -4,8 +4,9 @@ from physics3d.character_controller import CharacterController
 from panda3d.bullet import BulletWorld
 from ursina import camera as StaticCamera
 from ursina import mouse as StaticMouse
-from Enums.Keys import Keys
 from Enums.Actions import Actions
+from KeyMapper import KeyMapper
+
 from Game import Instance
 
 class PlayerController(Entity):
@@ -28,6 +29,12 @@ class PlayerController(Entity):
         
         Self.CameraPivot = Entity(parent = Self, y = Height)
         
+        Self.CanMove = True
+
+        Self.Freeze = False
+
+        Self.CanJump = True
+
         Self.Running = False
 
         Self.CanRun = True
@@ -108,17 +115,17 @@ class PlayerController(Entity):
         
     def HandleInput(Self, Key):
         
-        if Key == Instance.KeyMapper.GetKey(Actions.Run) and Self.CanRun:
+        if Key == KeyMapper.GetKey(Actions.Run) and Self.CanRun:
 
             Self.SetRunningState(True)
 
-        elif Key == F"{Instance.KeyMapper.GetKey(Actions.Run) }_up":
+        elif Key == F"{KeyMapper.GetKey(Actions.Run) }_up":
 
             Self.SetRunningState(False)
             
-        elif Key == Instance.KeyMapper.GetKey(Actions.Jump):
+        elif Key == KeyMapper.GetKey(Actions.Jump):
 
-            if Self.Jumping:
+            if Self.Jumping or Self.Freeze or not Self.CanJump:
                 
                 return
             
@@ -128,15 +135,21 @@ class PlayerController(Entity):
         
         # Player Movement
         
-        Direction = Vec3(
+        if Self.Freeze:
+
+            return
+
+        if not Self.CanMove:
+
+            Direction = Vec3(
             
-            Self.forward * (Instance.HeldKeys[Instance.KeyMapper.GetKey(Actions.Forward) ] - Instance.HeldKeys[Instance.KeyMapper.GetKey(Actions.Backward) ] )
+                Self.forward * (Instance.HeldKeys[KeyMapper.GetKey(Actions.Forward) ] - Instance.HeldKeys[KeyMapper.GetKey(Actions.Backward) ] )
+                
+                + Self.right * (Instance.HeldKeys[KeyMapper.GetKey(Actions.Right) ] - Instance.HeldKeys[KeyMapper.GetKey(Actions.Left) ] )
+                
+            ).normalized()
             
-            + Self.right * (Instance.HeldKeys[Instance.KeyMapper.GetKey(Actions.Right) ] - Instance.HeldKeys[Instance.KeyMapper.GetKey(Actions.Left) ] )
-            
-        ).normalized()
-        
-        Self.Move(Direction * Self.Velocity, True)
+            Self.Move(Direction * Self.Velocity, True)
         
         # Camera Rotation
         
