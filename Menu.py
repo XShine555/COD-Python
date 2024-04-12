@@ -2,6 +2,8 @@ from ursina import Entity, application as SingletonApplication
 from Enums.Keys import Keys
 from Game import Instance
 
+ActiveMenus = []
+
 class Menu(Entity):
     
     def __init__(Self, KeyToActive = None, IgnorePaused = True, PauseOnActive = True, **KWArgs):
@@ -33,6 +35,14 @@ class Menu(Entity):
         if Self.PauseOnActive:
             
             SingletonApplication.paused = Self.Active
+            
+        if Self.Active:
+            
+            ActiveMenus.append(Self)
+            
+        else:
+            
+            ActiveMenus.remove(Self)
         
     def Trigger(Self):
         
