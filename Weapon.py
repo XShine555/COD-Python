@@ -232,8 +232,6 @@ class Weapon(Entity):
 
     def UnEquip(Self):
 
-        Instance.taskMgr.remove("ShootFunction")
-
         Self.visible_setter(False)
         
         Self._Equipped = False
