@@ -5,8 +5,24 @@ from os import environ as Env, path as Path, makedirs as Mkdir
 
 class KeyMapper:
     
-    @staticmethod
-    def SearchFile():
+    def __init__(Self):
+
+        Self.KeyMap = Self.SearchFile()
+
+        Self.DefaultData = {
+            Actions.Forward : Keys.W,
+            Actions.Backward : Keys.S,
+            Actions.Left : Keys.A,
+            Actions.Right : Keys.D,
+            Actions.Run : Keys.LeftShift,
+            Actions.Jump : Keys.Space,
+            Actions.Reload : Keys.R,
+            Actions.Aim : Keys.RightMouseDown,
+            Actions.ChangeFiremode : Keys.V,
+            Actions.Shoot : Keys.LeftMouseDown
+        }
+    
+    def SearchFile(Self):
         
         Documents = Path.join(Env.get("UserProfile"), "Documents")
         
@@ -28,38 +44,12 @@ class KeyMapper:
             
             with open(SavedFile, "w+") as File:
                 
-                Data = {
-                   Actions.Forward : Keys.W,
-                   Actions.Backward : Keys.S,
-                   Actions.Left : Keys.A,
-                   Actions.Right : Keys.D,
-                   Actions.Run : Keys.LeftShift,
-                   Actions.Jump : Keys.Space,
-                   Actions.Reload : Keys.R,
-                   Actions.Aim : Keys.RightMouseDown,
-                   Actions.ChangeFiremode : Keys.V,
-                   Actions.Shoot : Keys.LeftMouseDown
-                }
+                Save(Self.DefaultData, File)
                 
-                Save(Data, File)
-                
-                return Data
+                return Self.DefaultData
         else:
             
-            DefaultData = {
-                Actions.Forward : Keys.W,
-                Actions.Backward : Keys.S,
-                Actions.Left : Keys.A,
-                Actions.Right : Keys.D,
-                Actions.Run : Keys.LeftShift,
-                Actions.Jump : Keys.Space,
-                Actions.Reload : Keys.R,
-                Actions.Aim : Keys.RightMouseDown,
-                Actions.ChangeFiremode : Keys.V,
-                Actions.Shoot : Keys.LeftMouseDown,
-            }
-            
-            for Key, Value in DefaultData.items():
+            for Key, Value in Self.DefaultData.items():
                 
                 if not Key in Load:
                     
@@ -69,7 +59,7 @@ class KeyMapper:
                     
             for Key, Value in TemporalDict.items():
                 
-                if not Key in DefaultData:
+                if not Key in Self.DefaultData:
                     
                     del Load[Key]
                     
@@ -79,9 +69,6 @@ class KeyMapper:
                             
             return Load
             
-    @staticmethod
-    def GetKey(Action):
+    def GetKey(Self, Action):
         
-        return KeyMap[Action]
-    
-KeyMapper.KeyMap = KeyMapper.SearchFile()
+        return Self.KeyMap[Action]
