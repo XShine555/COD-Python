@@ -19,3 +19,7 @@ class Actions():
     Aim = "Aim"
     
     ChangeFiremode = "ChangeFiremode"
+
+    PrimaryWeapon = "PrimaryWeapon"
+
+    SecondaryWeapon = "SecondaryWeapon"

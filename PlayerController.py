@@ -5,7 +5,8 @@ from panda3d.bullet import BulletWorld
 from ursina import camera as StaticCamera
 from ursina import mouse as StaticMouse
 from Enums.Actions import Actions
-from KeyMapper import KeyMapper
+from Weapons.Glock17 import Glock17
+from Weapons.M4A1 import M4A1
 
 from Game import Instance
 
@@ -29,18 +30,6 @@ class PlayerController(Entity):
         
         Self.CameraPivot = Entity(parent = Self, y = Height)
         
-        Self.CanMove = True
-
-        Self.Freeze = False
-
-        Self.CanJump = True
-
-        Self.Running = False
-
-        Self.CanRun = True
-        
-        Self.Jumping = not Self.Controller.can_jump
-        
         # Camera
         
         Self.SetFirstPerson()
@@ -54,6 +43,34 @@ class PlayerController(Entity):
         Self.MouseSensitivity = (40, 40)
         
         StaticMouse.locked = True
+
+        # Player States
+
+        Self._CanMove = True
+
+        Self._CanJump = True
+    
+        Self._CanRun = True
+
+        # Can Not Even Move The Camera.
+
+        Self._Freeze = False
+
+        # States
+
+        Self.Running = False
+        
+        Self.Jumping = not Self.Controller.can_jump
+
+        # Inventory
+
+        Self.Weapons = [
+            Glock17(),
+            M4A1()
+        ]
+
+        Self.CurrentWeapon = Self.Weapons[0]
+        Self.CurrentWeapon.Equip()
 
     # Basic Movement (Inherits From Controller)
 
@@ -112,40 +129,97 @@ class PlayerController(Entity):
         else:
 
             Self.Velocity = Self.WalkVelocity
+
+    def Freeze(Self, Value):
+
+        Self._Freeze = Value
+
+        Self._CanMove = not Value
+
+    def CanMove(Self, Value):
+
+        Self._Freeze = not Value
+
+        Self._CanMove = Value
+
+    def CanJump(Self, Value):
+
+        Self._CanJump = Value
+
+    # Inventory
+
+    def ChangeWeapon(Self, Slot = 1):
+
+        if Slot > len(Self.Weapons):
+
+            return
+        
+        Self.CurrentWeapon.UnEquip()
+
+        Self.CurrentWeapon = Self.Weapons[Slot]
+
+        Self.CurrentWeapon.Equip()
         
     def HandleInput(Self, Key):
         
-        if Key == KeyMapper.GetKey(Actions.Run) and Self.CanRun:
+        if Key == Instance.KeyMapper.GetKey(Actions.Run) and Self._CanRun:
 
             Self.SetRunningState(True)
 
-        elif Key == F"{KeyMapper.GetKey(Actions.Run) }_up":
+        elif Key == F"{Instance.KeyMapper.GetKey(Actions.Run) }_up":
 
             Self.SetRunningState(False)
             
-        elif Key == KeyMapper.GetKey(Actions.Jump):
+        elif Key == Instance.KeyMapper.GetKey(Actions.Jump):
 
-            if Self.Jumping or Self.Freeze or not Self.CanJump:
+            if Self.Jumping or Self._Freeze or not Self._CanJump:
                 
                 return
             
             Self.Jump()
 
-    def Update(Self, DeltaTime):
+        # Inventory
+
+        if Key == Instance.KeyMapper.GetKey(Actions.PrimaryWeapon):
+            
+            if len(Self.Weapons) < 1:
+
+                return
+            print("good")
+
+            if Self.CurrentWeapon == Self.Weapons[0]:
+
+                return
+            print("good2")
+            Self.ChangeWeapon(0)
+            
+        elif Key == Instance.KeyMapper.GetKey(Actions.SecondaryWeapon):
+
+            if len(Self.Weapons) < 2:
+
+                return
+            print("gucci")
+            if Self.CurrentWeapon == Self.Weapons[1]:
+
+                return
+            print("gucci2")
+            Self.ChangeWeapon(1)
+
+    def Update(Self):
         
         # Player Movement
         
-        if Self.Freeze:
+        if Self._Freeze:
 
             return
 
-        if not Self.CanMove:
-
+        if Self._CanMove:
+            
             Direction = Vec3(
             
-                Self.forward * (Instance.HeldKeys[KeyMapper.GetKey(Actions.Forward) ] - Instance.HeldKeys[KeyMapper.GetKey(Actions.Backward) ] )
+                Self.forward * (Instance.HeldKeys[Instance.KeyMapper.GetKey(Actions.Forward) ] - Instance.HeldKeys[Instance.KeyMapper.GetKey(Actions.Backward) ] )
                 
-                + Self.right * (Instance.HeldKeys[KeyMapper.GetKey(Actions.Right) ] - Instance.HeldKeys[KeyMapper.GetKey(Actions.Left) ] )
+                + Self.right * (Instance.HeldKeys[Instance.KeyMapper.GetKey(Actions.Right) ] - Instance.HeldKeys[Instance.KeyMapper.GetKey(Actions.Left) ] )
                 
             ).normalized()
             

@@ -26,7 +26,7 @@ import __main__
 
 class Game(ShowBase):
     
-    def __init__(Self, Title = 'COD-Python', Icon = '', WindowType = "OnScreen", Borderless = True, Fullscreen = False, Size = None, ForcedAspectRatio = None, Position = None, VSync = True, EditorUiEnabled = True, DevelopmentMode = False, RenderMode = None):
+    def __init__(Self, Title = 'COD-Python', Icon = '', WindowType = "OnScreen", Borderless = False, Fullscreen = False, Size = None, ForcedAspectRatio = None, Position = None, VSync = True, EditorUiEnabled = True, DevelopmentMode = False, RenderMode = None):
 
         # Game States
         
@@ -53,20 +53,6 @@ class Game(ShowBase):
         # Initialize ShowBase
         
         super().__init__(True, Self.WindowType)
-
-        InstanceScene.set_up()
-        
-        ApplicationSingleton.load_settings()
-        
-        ApplicationSingleton.hot_reloader = HotReloader(__main__.__file__ if hasattr(__main__, '__file__') else 'None')
-        
-        ApplicationSingleton.base.input = Self._ButtonDown
-        
-        InstanceWindow.make_editor_gui()
-        
-        InstanceWindow.editor_ui.enabled = False
-
-        InstanceWindow.borderless = Borderless
         
         # Camera Instance
 
@@ -102,10 +88,6 @@ class Game(ShowBase):
         
         Self.BulletWorld.setGravity(Self.Gravity)
 
-        Self._FixedTimeStep = (1/60)
-        
-        Self._PhysicsAccumulator = 0
-
         # Render Pipe Line
 
         Self.taskMgr.add(Self._UpdatePipeLine, "UpdatePipeLine")
@@ -134,17 +116,6 @@ class Game(ShowBase):
 
         Self.HeldKeys = DefaultDict(lambda: 0)
 
-        # WhiteListed Keys
-
-        Self.SpecialWhiteListKeys = {
-            'Mouse1' : Keys.LeftMouseDown,
-            'Mouse1 Up' : Keys.LeftMouseUp, 
-            'Mouse2' : Keys.MiddleMouseDown, 
-            'Mouse2 Up' : Keys.MiddleMouseUp, 
-            'Mouse3' : Keys.RightMouseDown, 
-            'Mouse3 Up' : Keys.RightMouseUp
-        }
-
         # Scene
 
         Self.CurrentScene : Scene = None
@@ -153,9 +124,47 @@ class Game(ShowBase):
         
         Self.SceneDirectory = "Scenes"
 
+        InstanceScene.set_up()
+        
+        ApplicationSingleton.load_settings()
+        
+        ApplicationSingleton.hot_reloader = HotReloader(__main__.__file__ if hasattr(__main__, '__file__') else 'None')
+        
+        ApplicationSingleton.base.input = Self._ButtonDown
+        
+        InstanceWindow.make_editor_gui()
+        
+        InstanceWindow.editor_ui.enabled = False
+
+        InstanceWindow.borderless = Borderless
+
     # Private Functions
 
-    def _SanitizeKey(Self, Key):
+    def _SearchAndCall(Self, Attribute, Call = None):
+
+        for Entity in InstanceScene.entities:
+                
+            if not Entity.enabled or Entity.ignore or Entity.ignore_input:
+                    
+                continue
+                
+            if ApplicationSingleton.paused and not Entity.ignore_paused:
+                    
+                continue
+
+            if hasattr(Entity, Attribute):
+
+                Method = getattr(Entity, Attribute)
+
+                if Call is None:
+
+                    Method()
+
+                else:
+
+                    Method(Call)
+
+    def _ClearKey(Self, Key):
 
         if Key in KeyboardKeys:
 
@@ -167,95 +176,53 @@ class Game(ShowBase):
 
                     break
 
-        if Key in Self.InputNameChanges:
+        if Key in Keys.InputNameChanges:
 
-            Key = Self.InputNameChanges[Key]
+            Key = Keys.InputNameChanges[Key]
 
         return Key
 
     def _RawKeyUp(Self, Key):
         
-        SanitizeKey = Self._SanitizeKey(Key)
+        Key = Self._ClearKey(Key)
 
-        Self.HeldKeys[SanitizeKey] = 0
+        Self.HeldKeys[Key] = 0
 
-        if Key in Self.InputNameChanges:
+        if Key in Keys.InputNameChanges:
 
-            for Entity in InstanceScene.entities:
-                
-                if not Entity.enabled or Entity.ignore or Entity.ignore_input:
-                    
-                    continue
-                
-                if ApplicationSingleton.paused and not Entity.ignore_paused:
-                    
-                    continue
+            Key = Keys.SpecialWhiteListKeys[Key]
 
-                if hasattr(Entity, "HandleInput"):
-
-                    Entity.HandleInput(F"{SanitizeKey} up")
+        Self._SearchAndCall("HandleInput", F"{Key} up")
 
     def _RawKeyDown(Self, Key):
         
-        SanitizeKey = Self._SanitizeKey(Key)
+        Key = Self._ClearKey(Key)
 
-        Self.HeldKeys[SanitizeKey] = 1
+        Self.HeldKeys[Key] = 1
 
-        for Entity in InstanceScene.entities:
-            
-            if not Entity.enabled or Entity.ignore or Entity.ignore_input:
-                    
-                    continue
-                
-            if ApplicationSingleton.paused and not Entity.ignore_paused:
-                    
-                continue
+        if Key in Keys.InputNameChanges:
 
-            if hasattr(Entity, "HandleInput"):
+            Key = Keys.SpecialWhiteListKeys[Key]
 
-                Entity.HandleInput(SanitizeKey)
+        Self._SearchAndCall("HandleInput", Key)
 
     def _ButtonUp(Self, Key):
 
-        Key = Key.lower()
+        if Key in Keys.SpecialWhiteListKeys:
 
-        if Key in Self.SpecialWhiteListKeys:
+            Key = Keys.SpecialWhiteListKeys[Key]
 
-            for Entity in InstanceScene.entities:
-                
-                if not Entity.enabled or Entity.ignore or Entity.ignore_input:
-                    
-                    continue
-                
-                if ApplicationSingleton.paused and not Entity.ignore_paused:
-                    
-                    continue
-
-                if hasattr(Entity, "HandleInput"):
-
-                    Entity.HandleInput(Self.SpecialWhiteListKeys[F"{Key} up"] )
+            Self._SearchAndCall("HandleInput", F"{Key} up")
 
     def _ButtonDown(Self, Key):
-
-        Key = Key.lower()
         
-        if Key in Self.SpecialWhiteListKeys:
+        if Key in Keys.SpecialWhiteListKeys:
 
-            for Entity in InstanceScene.entities:
-                
-                if not Entity.enabled or Entity.ignore or Entity.ignore_input:
-                    
-                    continue
-                
-                if ApplicationSingleton.paused and not Entity.ignore_paused:
-                    
-                    continue
+            Key = Keys.SpecialWhiteListKeys[Key]
 
-                if hasattr(Entity, "HandleInput"):
+            Self._SearchAndCall("HandleInput", Key)
 
-                    Entity.HandleInput(Self.SpecialWhiteListKeys[Key] )
-
-            InstanceMouse.input(Self.SpecialWhiteListKeys[Key] )
+            InstanceMouse.input(Key)
                     
     def _UpdatePipeLine(Self, Task):
 
@@ -267,25 +234,7 @@ class Game(ShowBase):
 
             __main__.Update(Time.dt)
             
-        for Entity in InstanceScene.entities:
-            
-            if not Entity.enabled or Entity.ignore:
-                
-                continue
-
-            if ApplicationSingleton.paused and not Entity.ignore_paused:
-                
-                continue
-
-            if hasattr(Entity, 'Update') and callable(Entity.Update):
-                
-                Entity.Update(Time.dt)
-
-            InstanceWindow.fps_counter.update()
-            
-        if Self.ShowFPS:
-            
-            Self.FPS.text = F"FPS: {floor(1//Time.dt) }"
+        Self._SearchAndCall("Update")
             
         return Task.cont
     
@@ -295,14 +244,8 @@ class Game(ShowBase):
             
             return Task.cont
         
-        Self._PhysicsAccumulator += Time.dt
+        Self.BulletWorld.doPhysics(Time.dt, 10, 1.0/360.0)
 
-        if Self._PhysicsAccumulator >= Self._FixedTimeStep:
-            
-            Self.BulletWorld.doPhysics(Time.dt, 10, 1.0/180.0)
-            
-            Self._PhysicsAccumulator -= Self._FixedTimeStep
-            
         return Task.cont
 
     # Public Functions

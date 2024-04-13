@@ -50,7 +50,7 @@ class Bullet(Entity):
         
         Self.world_position += Gravity + Distance
             
-    def Update(Self, DeltaTime):
+    def Update(Self):
             
         if FrameTime() > Self.DestroyAfter:
             

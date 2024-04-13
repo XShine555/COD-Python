@@ -99,6 +99,8 @@ class Keys():
     X = 'x'
     Y = 'y'
     Z = 'z'
+    NumberOne = "1"
+    NumberTwo = "2"
     SemiColon = ";"
     InputNameChanges = {
         'mouse1' : 'left mouse down', 'mouse1 up' : 'left mouse up', 'mouse2' : 'middle mouse down', 'mouse2 up' : 'middle mouse up', 'mouse3' : 'right mouse down', 'mouse3 up' : 'right mouse up',
@@ -110,4 +112,12 @@ class Keys():
         'shift-mouse1' : 'left mouse down', 'shift-mouse2' : 'middle mouse down', 'shift-mouse3' : 'right mouse down',
         'alt-mouse1' : 'left mouse down', 'alt-mouse2' : 'middle mouse down', 'alt-mouse3' : 'right mouse down',
         'page_down' : 'page down', 'page_down up' : 'page down up', 'page_up' : 'page up', 'page_up up' : 'page up up',
+    }
+    SpecialWhiteListKeys = {
+        'mouse1' : LeftMouseDown,
+        'mouse1 up' : LeftMouseUp, 
+        'mouse2' : MiddleMouseDown, 
+        'mouse2 up' : MiddleMouseUp, 
+        'mouse3' : RightMouseDown, 
+        'mouse3 up' : RightMouseUp
     }

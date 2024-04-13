@@ -3,24 +3,26 @@ from Enums.Keys import Keys
 from Enums.Actions import Actions
 from os import environ as Env, path as Path, makedirs as Mkdir
 
-class KeyMapper:
+DefaultData = {
+    Actions.Forward : Keys.W,
+    Actions.Backward : Keys.S,
+    Actions.Left : Keys.A,
+    Actions.Right : Keys.D,
+    Actions.Run : Keys.LeftShift,
+    Actions.Jump : Keys.Space,
+    Actions.Reload : Keys.R,
+    Actions.Aim : Keys.RightMouseDown,
+    Actions.ChangeFiremode : Keys.V,
+    Actions.Shoot : Keys.LeftMouseDown,
+    Actions.PrimaryWeapon : Keys.NumberOne,
+    Actions.SecondaryWeapon : Keys.NumberTwo
+}
+
+class KeyMapper():
     
     def __init__(Self):
 
         Self.KeyMap = Self.SearchFile()
-
-        Self.DefaultData = {
-            Actions.Forward : Keys.W,
-            Actions.Backward : Keys.S,
-            Actions.Left : Keys.A,
-            Actions.Right : Keys.D,
-            Actions.Run : Keys.LeftShift,
-            Actions.Jump : Keys.Space,
-            Actions.Reload : Keys.R,
-            Actions.Aim : Keys.RightMouseDown,
-            Actions.ChangeFiremode : Keys.V,
-            Actions.Shoot : Keys.LeftMouseDown
-        }
     
     def SearchFile(Self):
         
@@ -44,12 +46,12 @@ class KeyMapper:
             
             with open(SavedFile, "w+") as File:
                 
-                Save(Self.DefaultData, File)
+                Save(DefaultData, File)
                 
-                return Self.DefaultData
+                return DefaultData
         else:
             
-            for Key, Value in Self.DefaultData.items():
+            for Key, Value in DefaultData.items():
                 
                 if not Key in Load:
                     
@@ -59,7 +61,7 @@ class KeyMapper:
                     
             for Key, Value in TemporalDict.items():
                 
-                if not Key in Self.DefaultData:
+                if not Key in DefaultData:
                     
                     del Load[Key]
                     

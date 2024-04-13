@@ -62,7 +62,7 @@ class MainMenu(Menu):
 
             Self.Trigger()
 
-            Instance.StartGame()
+            #Instance.StartGame()
 
         else:
 

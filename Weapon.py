@@ -53,6 +53,10 @@ class Weapon(Entity):
         Self.IncludeChamberedBullet = IncludeChamberedBullet
 
         Self.RecoilVector : Vec3 = Vec3(0, 0, 0)
+
+        Self._Equipped = False
+
+        Self.visible_setter(Self._Equipped)
         
     def CycleFireMode(Self):
         
@@ -217,9 +221,29 @@ class Weapon(Entity):
         Self.Reloading = False
 
         Instance.FPSController.CanRun = True
+
+    def Equip(Self):
+
+        Self.visible_setter(True)
         
+        Self._Equipped = True
+
+        Self.parent = InstanceCamera
+
+    def UnEquip(Self):
+
+        Instance.taskMgr.remove("ShootFunction")
+
+        Self.visible_setter(False)
+        
+        Self._Equipped = False
+
     def HandleInput(Self, Key):
-        
+
+        if not Self._Equipped:
+
+            return
+
         if Key == Instance.KeyMapper.GetKey(Actions.ChangeFiremode):
             
             Self.CycleFireMode()
@@ -228,7 +252,7 @@ class Weapon(Entity):
             
             Self.LeftMouseDown = True
 
-            Instance.taskMgr.add(Self.Shoot() )
+            Instance.taskMgr.add(Self.Shoot(), "ShootFunction")
 
         elif Key == F"{Instance.KeyMapper.GetKey(Actions.Shoot) }_up" or Instance.KeyMapper.GetKey(Actions.Shoot).replace('down', 'up'):
 
@@ -242,8 +266,12 @@ class Weapon(Entity):
             
             Instance.taskMgr.add(Self.Reload() )
 
-    def Update(Self, DeltaTime):
-        
+    def Update(Self):
+
+        if not Self._Equipped:
+
+            return
+
         if Self.Aimming and not Instance.FPSController.Running:
             
             Self.position = Lerp(Self.position, Self.AimPosition,  0.2)

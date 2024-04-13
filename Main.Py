@@ -1,14 +1,14 @@
 from ursina import Vec3, Entity
 from PlayerController import PlayerController
 from Weapons.Glock17 import Glock17
-from ursina import EditorCamera, camera as InstanceCamera, application
+from ursina import camera as InstanceCamera
 from Game import Instance
 from Menus.MainMenu import MainMenu
 from Menus.PauseInGame import PauseInGame
 from Enums.Keys import Keys
 
 A = Instance.LoadSceneSafely("Town")
-#Instance.LoadScene("Casa")
+#Instance.LoadSceneSafely("Casa")
 
 Instance.FPSController = PlayerController(World = Instance.BulletWorld, model = "cube", Height = 4, collider = 'box')
 
@@ -22,6 +22,6 @@ Instance.Escape = PauseInGame(KeyToActive = Keys.Escape)
 
 Instance.EnableShowFPS()
 
-Instance.LimitFPS(60)
+#Instance.LimitFPS(60)
 
 Instance.Run()
