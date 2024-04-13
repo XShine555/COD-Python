@@ -18,8 +18,6 @@ from ursina.main import keyboard_keys as KeyboardKeys
 
 from Scene import Scene
 from math import floor
-from PlayerController import Instance
-
 from os import walk as Cd
 
 import __main__
