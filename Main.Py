@@ -6,11 +6,14 @@ from Game import Instance
 from Menus.MainMenu import MainMenu
 from Menus.PauseInGame import PauseInGame
 from Enums.Keys import Keys
+from RoundManager import RoundManager
 
 A = Instance.LoadSceneSafely("Town")
 #Instance.LoadSceneSafely("Casa")
 
 Instance.FPSController = PlayerController(World = Instance.BulletWorld, model = "cube", Height = 4, collider = 'box')
+Instance.GameStarted = False
+Instance.RoundManager = RoundManager()
 
 Gun = Glock17()
 Gun.parent = InstanceCamera

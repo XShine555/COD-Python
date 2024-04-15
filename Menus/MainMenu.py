@@ -62,6 +62,10 @@ class MainMenu(Menu):
 
             Self.Trigger()
 
+            Instance.GameStarted = True
+
+            Instance.RoundManager.StartGame()
+
             #Instance.StartGame()
 
         else:
