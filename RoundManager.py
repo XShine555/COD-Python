@@ -27,7 +27,7 @@ class RoundManager():
 
     async def _MakeStartAnimation(Self):
 
-        Instance.FPSController.Freeze(True)
+        #Instance.FPSController.Freeze(True)
 
         StartText = Text("Round 1")
         

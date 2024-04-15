@@ -2,6 +2,7 @@ from Scene import Scene
 from ursina import Entity
 from physics3d import BoxCollider, MeshCollider
 from Game import Instance
+from Props.Box import Box
 
 from ursina import destroy
 
@@ -19,4 +20,6 @@ class Town(Scene):
         Self.GroundCollider = BoxCollider(Instance.BulletWorld, Self.Ground)
         Self.GroundCollider.y = -1
 
-        Self.Model = Entity(model = 'Models/testeo.obj', parent = Self, scale = .2)
+        #Self.Model = Entity(model = 'Models/testeo.obj', parent = Self, scale = .2)
+        
+        Self.Box = Box(model = 'cube', parent = Self, position = (0, 1, 0), scale = (1, 1, 3), collider = 'box')

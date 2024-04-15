@@ -15,8 +15,8 @@ Instance.FPSController = PlayerController(World = Instance.BulletWorld, model = 
 Instance.GameStarted = False
 Instance.RoundManager = RoundManager()
 
-Gun = Glock17()
-Gun.parent = InstanceCamera
+#Gun = Glock17()
+#Gun.parent = InstanceCamera
 
 Instance.MainMenu = MainMenu()
 Instance.MainMenu.Trigger()
