@@ -1,14 +1,12 @@
-from ursina import Entity, Vec3, destroy as DestroyEntity, raycast as Raycast, color, lerp as Lerp, distance as Distance1D
+from ursina import Entity, Vec3, destroy as DestroyEntity, raycast as RayCast
 from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock
 from ursina import camera
-from ursina.scene import instance as InstanceScene
-from Game import Instance
 
 FrameTime = GlobalClock.getFrameTime
 
 class Bullet(Entity):
     
-    def __init__(Self, StartPosition, Speed = 350, Gravity = 9.8, BulletDropPerMeter = 1, DestroyAfter = 5, **KWargs):
+    def __init__(Self, StartPosition, Speed = 350, Gravity = 9.8, BulletDropPerMeter = 0.00127, DestroyAfter = 5, Collider = 'box', **KWargs):
         
         super().__init__(**KWargs)
         
@@ -18,31 +16,41 @@ class Bullet(Entity):
         
         Self.StartPosition = StartPosition
         
+        Self.collider_setter(Collider)
+        
         Self.world_rotation = camera.world_rotation
         
         Self.Forward = Self.forward
         
-        Self._Speed = Speed,
-        
-        Self.Speed = Self._Speed[0]
+        Self.Speed = Speed / 100
         
         Self.Gravity = Gravity
         
         Self.BulletDropPerMeter = BulletDropPerMeter
         
         Self.DestroyAfter = Self.StartTime + DestroyAfter
-        
-        Self.LastPoint = Self.world_position
-        
-    def ParabolicFormula(Self, Time):
-        
-        Point = Self.StartPosition + (Self.Forward * Self.Speed * Time)
-        
-        Gravity = Vec3(0, -Self.BulletDropPerMeter, 0) * Self.Gravity * Time * Time
-        
-        return Point + Gravity
     
-    def Update(Self, DeltaTime):
+    def UpdateRayCastPosition(Self):
+        
+        PassTime = FrameTime() - Self.StartTime
+        
+        Ray = RayCast(Self.world_position, Self.Forward, Self.Speed, ignore = (Self, ) )
+        
+        if Ray.hit:
+            
+            DestroyEntity(Self)
+            
+            return
+        
+        PassTime = FrameTime() - Self.StartTime
+        
+        Gravity = Vec3(0, -Self.BulletDropPerMeter, 0) * Self.Gravity * PassTime * PassTime
+        
+        Distance = (Self.Forward * Self.Speed)
+        
+        Self.world_position += Gravity + Distance
+            
+    def Update(Self):
             
         if FrameTime() > Self.DestroyAfter:
             
@@ -50,20 +58,4 @@ class Bullet(Entity):
             
             return
         
-        CurrentTime = FrameTime() - Self.StartTime
-        
-        Parabola = Self.ParabolicFormula(CurrentTime)
-        
-        Calc = Distance1D(Self.LastPoint, Parabola)
-        
-        Hit = Raycast(Parabola, Self.Forward, Calc, ignore = (Self, Instance.FPSController) )
-        
-        if Hit.entity:
-            
-            DestroyEntity(Self)
-            
-            return
-        
-        Self.world_position = Parabola
-        
-        Self.LastPoint = Self.world_position
+        Self.UpdateRayCastPosition()

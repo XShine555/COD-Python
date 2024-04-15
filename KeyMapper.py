@@ -3,13 +3,26 @@ from Enums.Keys import Keys
 from Enums.Actions import Actions
 from os import environ as Env, path as Path, makedirs as Mkdir
 
+DefaultData = {
+    Actions.Forward : Keys.W,
+    Actions.Backward : Keys.S,
+    Actions.Left : Keys.A,
+    Actions.Right : Keys.D,
+    Actions.Run : Keys.LeftShift,
+    Actions.Jump : Keys.Space,
+    Actions.Reload : Keys.R,
+    Actions.Aim : Keys.RightMouseDown,
+    Actions.ChangeFiremode : Keys.V,
+    Actions.Shoot : Keys.LeftMouseDown,
+    Actions.PrimaryWeapon : Keys.NumberOne,
+    Actions.SecondaryWeapon : Keys.NumberTwo
+}
+
 class KeyMapper():
     
     def __init__(Self):
-        
+
         Self.KeyMap = Self.SearchFile()
-        
-        pass
     
     def SearchFile(Self):
         
@@ -33,36 +46,10 @@ class KeyMapper():
             
             with open(SavedFile, "w+") as File:
                 
-                Data = {
-                   Actions.Forward : Keys.W,
-                   Actions.Backward : Keys.S,
-                   Actions.Left : Keys.A,
-                   Actions.Right : Keys.D,
-                   Actions.Run : Keys.LeftShift,
-                   Actions.Jump : Keys.Space,
-                   Actions.Reload : Keys.R,
-                   Actions.Aim : Keys.RightMouseDown,
-                   Actions.ChangeFiremode : Keys.V,
-                   Actions.Shoot : Keys.LeftMouseDown
-                }
+                Save(DefaultData, File)
                 
-                Save(Data, File)
-                
-                return Data
+                return DefaultData
         else:
-            
-            DefaultData = {
-                Actions.Forward : Keys.W,
-                Actions.Backward : Keys.S,
-                Actions.Left : Keys.A,
-                Actions.Right : Keys.D,
-                Actions.Run : Keys.LeftShift,
-                Actions.Jump : Keys.Space,
-                Actions.Reload : Keys.R,
-                Actions.Aim : Keys.RightMouseDown,
-                Actions.ChangeFiremode : Keys.V,
-                Actions.Shoot : Keys.LeftMouseDown,
-            }
             
             for Key, Value in DefaultData.items():
                 
@@ -83,7 +70,6 @@ class KeyMapper():
                 Save(Load, File, indent = 4)
                             
             return Load
-            
             
     def GetKey(Self, Action):
         
