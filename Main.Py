@@ -7,6 +7,7 @@ from Menus.MainMenu import MainMenu
 from Menus.PauseInGame import PauseInGame
 from Enums.Keys import Keys
 from RoundManager import RoundManager
+from enemies.zombies import Zombies
 
 A = Instance.LoadSceneSafely("Town")
 #Instance.LoadSceneSafely("Casa")
@@ -22,9 +23,9 @@ Instance.MainMenu = MainMenu()
 Instance.MainMenu.Trigger()
 Instance.Escape = PauseInGame(KeyToActive = Keys.Escape)
 #Instance.Menu.Trigger()
-
 Instance.EnableShowFPS()
-
+Instance.enemies
 #Instance.LimitFPS(60)
+Instance.zombies = Zombies(10,3,10)
 
 Instance.Run()

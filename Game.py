@@ -138,6 +138,7 @@ class Game(ShowBase):
 
         InstanceWindow.borderless = Borderless
 
+
     # Private Functions
 
     def _SearchAndCall(Self, Attribute, Call = None):
