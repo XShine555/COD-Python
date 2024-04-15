@@ -66,7 +66,6 @@ class PlayerController(Entity):
 
         Self.Weapons = [
             Glock17(),
-            M4A1()
         ]
 
         Self.CurrentWeapon = Self.Weapons[0]
@@ -204,6 +203,33 @@ class PlayerController(Entity):
                 return
             print("gucci2")
             Self.ChangeWeapon(1)
+            
+    def GiveWeapon(Self, Weapon):
+        
+        if len(Self.Weapons) < 2:
+        
+            Self.Weapons.append(Weapon())
+            Self.ChangeWeapon(1)
+            
+        elif Self.CurrentWeapon == Self.Weapons[1]:
+            
+            Self.Weapons[1] = Weapon()
+            Self.ChangeWeapon(1)
+            
+        else:
+            
+            Self.Weapons[0] = Weapon()
+            Self.ChangeWeapon(0)
+            
+    def HasWeapon(Self, WeaponClass):
+        
+        for Item in Self.Weapons:
+            
+            if isinstance(Item, WeaponClass):
+                
+                return True
+            
+        return False
 
     def Update(Self):
         
