@@ -252,8 +252,8 @@ class Weapon(Entity):
 
             Instance.taskMgr.add(Self.Shoot(), "ShootFunction")
 
-        elif Key == F"{Instance.KeyMapper.GetKey(Actions.Shoot) }_up" or Instance.KeyMapper.GetKey(Actions.Shoot).replace('down', 'up'):
-
+        elif Key == F"{Instance.KeyMapper.GetKey(Actions.Shoot) } up" or Key == Instance.KeyMapper.GetKey(Actions.Shoot).replace('down', 'up'):
+            
             Self.LeftMouseDown = False
 
         if Key == Instance.KeyMapper.GetKey(Actions.Aim):

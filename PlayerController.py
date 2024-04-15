@@ -223,7 +223,13 @@ class PlayerController(Entity):
             
     def HasWeapon(Self, WeaponClass):
         
-        return any(isinstance(Weapon, WeaponClass) for Weapon in Self.Weapons)
+        for Item in Self.Weapons:
+            
+            if isinstance(Item, WeaponClass):
+                
+                return True
+            
+        return False
 
     def Update(Self):
         

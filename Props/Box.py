@@ -3,6 +3,7 @@ from direct.task.Task import Task
 from Enums.Keys import Keys
 from Game import Instance
 from random import choice as RandChoice
+from importlib.util import spec_from_file_location as LoadFile, module_from_spec as ModuleToSpec
 
 from Weapons.Glock17 import Glock17
 from Weapons.M4A1 import M4A1
@@ -10,17 +11,17 @@ from Weapons.Intervention import Intervention
 
 from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock
 
+from os import walk as Cd, getcwd as GetCWD, path as Path
+
 FrameTime = GlobalClock.getFrameTime
 
 class Box(Entity):
     
     def __init__(Self, **KWArgs):
         
-        Self.Weapons = (
-            Glock17,
-            M4A1,
-            Intervention
-        )
+        Self.Weapons = []
+        
+        Self._LoadWeapons()
         
         super().__init__(**KWArgs)
         
@@ -36,6 +37,26 @@ class Box(Entity):
         
         Self.CurrentWeapon = None
         
+    def _LoadWeapons(Self):
+
+        for Root, Dirs, Files in Cd("Weapons/"):
+
+            for Name in Files:
+
+                if Name.lower().endswith(".py"):
+
+                    File = LoadFile(Name, F"Weapons/{Name}")
+                    
+                    Class = ModuleToSpec(File)
+                    
+                    File.loader.exec_module(Class)
+
+                    WeaponToLoad = getattr(Class, Name.replace('.py', '') )
+                    
+                    Self.Weapons.append(WeaponToLoad)
+                    
+        print(Self.Weapons)
+        
     def Roll(Self):
         
         Instance.taskMgr.add(Self._Roll() )
@@ -49,13 +70,22 @@ class Box(Entity):
         
         Self.Using = True
         
-        for I in range(12):
+        Self.CanGrab = False
+
+
+        AvailableWeapons= []
+        
+        print(Instance.FPSController.Weapons[0].__class__, Self.Weapons[0])
+        
+        for Item in Self.Weapons:
             
-            Self.CurrentWeapon = RandChoice(Self.Weapons)
-            
-            while Instance.FPSController.HasWeapon(Self.CurrentWeapon):
+            if Item.__name__ not in [type(weapon).__name__ for weapon in Instance.FPSController.Weapons]:
                 
-                Self.CurrentWeapon = RandChoice(Self.Weapons)
+                AvailableWeapons.append(Item)
+            
+        for I in range(10):
+            
+            Self.CurrentWeapon = RandChoice(AvailableWeapons)
             
             Self.CosmeticWeapon.model_setter(Self.CurrentWeapon.Model)
             Self.CosmeticWeapon.color_setter(Self.CurrentWeapon.Color)
@@ -81,7 +111,7 @@ class Box(Entity):
                     
                     Destroy(Self.CosmeticWeapon)
                     
-                    Self.CosmeticWeapon = None
+                    Self.CosmeticWeapon = None 
                     
                     Self.CurrentWeapon = None
                     
@@ -107,8 +137,8 @@ class Box(Entity):
             
             return
         
-        if Self.CosmeticWeapon.world_position.y > Self.WeaponPosition.y:
+        if Self.CanGrab:
             
             return
         
-        Self.CosmeticWeapon.world_position = Lerp(Self.CosmeticWeapon.world_position, Self.CosmeticWeapon.world_position + Vec3(0, 0.1, 0), 0.6)
+        Self.CosmeticWeapon.world_position = Lerp(Self.CosmeticWeapon.world_position, Self.CosmeticWeapon.world_position + Vec3(0, 0.1, 0), 0.3)
