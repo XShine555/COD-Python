@@ -50,6 +50,7 @@ class Menu(Entity):
     
     def HandleInput(Self, Key):
         
-        if Key == Self.KeyToActive:
+        if Key == Self.KeyToActive and Instance.GameStarted:
+
             
             Self.Trigger()
