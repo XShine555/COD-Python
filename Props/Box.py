@@ -1,17 +1,13 @@
-from ursina import Entity, Vec3, destroy as Destroy, curve as Curve, scene as InstanceScene, lerp as Lerp
+from ursina import Entity, Vec3, destroy as Destroy, scene as InstanceScene, lerp as Lerp
 from direct.task.Task import Task
 from Enums.Keys import Keys
 from Game import Instance
 from random import choice as RandChoice
 from importlib.util import spec_from_file_location as LoadFile, module_from_spec as ModuleToSpec
 
-from Weapons.Glock17 import Glock17
-from Weapons.M4A1 import M4A1
-from Weapons.Intervention import Intervention
-
 from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock
 
-from os import walk as Cd, getcwd as GetCWD, path as Path
+from os import walk as Cd
 
 FrameTime = GlobalClock.getFrameTime
 
