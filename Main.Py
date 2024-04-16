@@ -26,6 +26,6 @@ Instance.Escape = PauseInGame(KeyToActive = Keys.Escape)
 Instance.EnableShowFPS()
 
 #Instance.LimitFPS(60)
-Instance.zombies = Zombies(10,3,10)
+#Instance.enemies = Zombies(10,3,10)
 
 Instance.Run()
