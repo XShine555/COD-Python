@@ -99,6 +99,10 @@ class Box(Entity):
         
         if Key == Keys.E:
             
+            if Instance.RoundManager is None or Instance.RoundManager.PlayerPoints < 950:
+                
+                return
+            
             if not Self.Using:
                 
                 Self.Roll()
