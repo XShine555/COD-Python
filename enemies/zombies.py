@@ -1,7 +1,7 @@
-from ursina import Entity
+from ursina import Entity, time
 
 class Zombies(Entity):
-    def __init__(Self, MaxHP,Damage, Speed):
+    def __init__(Self, MaxHP,Damage, Speed, **KWArgs):
 
         super().__init__(**KWArgs)
     
