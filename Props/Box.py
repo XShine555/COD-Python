@@ -99,7 +99,7 @@ class Box(Entity):
         
         if Key == Keys.E:
             
-            if Instance.RoundManager is not None and Instance.RoundManager.PlayerPoints < 950:
+            if Instance.RoundManager is None or Instance.RoundManager.PlayerPoints < 950:
                 
                 return
             
