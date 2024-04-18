@@ -1,5 +1,6 @@
 from Game import Instance
 from direct.task.Task import Task
+from enemies.zombies import Zombies
 from ursina import Text, destroy as Destroy, Vec4, Color
 
 def rgba(r, g, b, a=255):
@@ -15,7 +16,16 @@ class RoundManager():
         
         Self.Round = 1
 
-        Self.Points = []
+        Self.BaseZombies = 6
+
+        Self.Points = 500
+
+        Self.MaxZombies = 150
+
+        Self.ZombiesInScene = 0
+
+        Self.ZombiesRound = Self.BaseZombies * 1.5 * Self.Round
+
 
     def StartGame(Self, Map = "NoName"):
 
@@ -24,12 +34,31 @@ class RoundManager():
         Self.Round = 1
 
         Instance.taskMgr.add(Self._MakeStartAnimation() )
+    
+    def _spawnzombies(Self):
+        for x in range (int(Self.ZombiesRound)):
+           #print("Nein")
+            Self.ZombiesInScene += 1
+            if Self.Round > 7:
+               Zombies(can_run=True)
+            elif Self.Round > 4:
+                pass
+            else:
+                Zombies()
+        print(Self.ZombiesInScene)
+    
+    
+    def checklast(Self):
+        if Self.ZombiesInScene == 0:
+            Self.Round += 1
+            Instance.taskMgr.add(Self._MakeStartAnimation() )
+
 
     async def _MakeStartAnimation(Self):
 
         #Instance.FPSController.Freeze(True)
 
-        StartText = Text("Round 1")
+        StartText = Text(f"Round {Self.Round}")
         
         for i in range(40, -1, -1):
             newColor = rgba(1, 1, 1, i / 40)
@@ -39,3 +68,9 @@ class RoundManager():
         Instance.FPSController.Freeze(False)
 
         Destroy(StartText)
+
+        await Task.pause(3)
+
+        Self._spawnzombies()
+
+    
