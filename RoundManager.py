@@ -18,7 +18,7 @@ class RoundManager():
 
         Self.BaseZombies = 6
 
-        Self.Points = 500
+        Self.Points = 1000
 
         Self.MaxZombies = 150
 
@@ -35,18 +35,20 @@ class RoundManager():
 
         Instance.taskMgr.add(Self._MakeStartAnimation() )
     
-    def _spawnzombies(Self):
-        for x in range (int(Self.ZombiesRound)):
-           #print("Nein")
+    async def _spawnzombies(Self):
+        for x in range(int(Self.ZombiesRound)):
             Self.ZombiesInScene += 1
             if Self.Round > 7:
-               Zombies(can_run=True)
+                Zombies(can_run=True)
             elif Self.Round > 4:
                 pass
             else:
-                Zombies()
+                Zombies(can_run=False)
+            await Task.pause(1)
+
         print(Self.ZombiesInScene)
-    
+
+
     
     def checklast(Self):
         if Self.ZombiesInScene == 0:
@@ -71,6 +73,6 @@ class RoundManager():
 
         await Task.pause(3)
 
-        Self._spawnzombies()
+        Instance.taskMgr.add(Self._spawnzombies() )
 
     

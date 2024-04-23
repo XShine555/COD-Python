@@ -20,6 +20,16 @@ class Town(Scene):
         Self.GroundCollider = BoxCollider(Instance.BulletWorld, Self.Ground)
         Self.GroundCollider.y = -1
 
-        #Self.Model = Entity(model = 'Models/testeo.obj', parent = Self, scale = .2)
+        Self.Model = Entity(model = 'Models/testeo.obj', parent = Self, scale = .2)
         
         Self.Box = Box(model = 'cube', parent = Self, position = (0, 1, 0), scale = (1, 1, 3), collider = 'box')
+
+        #RESPAWNS
+
+        Self.Respawns = [
+            Entity(model = "cube", scale = 1, x = 27, z = 27 ),
+            Entity(model = "cube", scale = 1, x = -27, z = 27),
+            Entity(model = "cube", scale = 1, x = -27, z = 27),
+            Entity(model = "cube", scale = 1, x = -27, z = -27)
+        ]
+
