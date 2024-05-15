@@ -5,4 +5,4 @@ class Bullet9Mm(Bullet):
     
     def __init__(Self, StartPosition):
         
-        super().__init__(StartPosition, 350, 9.8, 0.00127, model = "cube" )
+        super().__init__(StartPosition, Speed = 365, Gravity = 9.8, BulletDropPerMeter = 0.00127, model = "cube", scale = Vec3(0.1, 0.1, 0.1) )
