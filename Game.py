@@ -22,6 +22,8 @@ from Scene import Scene
 from math import floor
 from os import walk as Cd
 
+import simplepbr
+
 import __main__
 
 class Game(ShowBase):
@@ -53,6 +55,8 @@ class Game(ShowBase):
         # Initialize ShowBase
         
         super().__init__(True, Self.WindowType)
+        
+        Self.PBR = simplepbr.init(max_lights = 0, msaa_samples = 0, enable_shadows = False)
         
         # Camera Instance
 

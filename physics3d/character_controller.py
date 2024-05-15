@@ -5,7 +5,7 @@ class CharacterController(BulletCharacterControllerNode):
     def __init__(self, world:BulletWorld, entity:Entity, radius=1, height=2, name='Player', **opts) -> None:
         super().__init__(BulletCapsuleShape(radius/2, height/2, 1), radius/2, name)
         self.np = application.base.render.attachNewNode(self)
-
+        
         if entity.parent:
             self.np.reparent_to(entity.parent)
         

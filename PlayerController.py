@@ -52,7 +52,7 @@ class PlayerController(Entity):
     
         Self._CanRun = True
 
-        # Can Not Even Move The Camera.
+        # Can Not Move Even The Camera.
 
         Self._Freeze = False
 
@@ -184,12 +184,11 @@ class PlayerController(Entity):
             if len(Self.Weapons) < 1:
 
                 return
-            print("good")
 
             if Self.CurrentWeapon == Self.Weapons[0]:
 
                 return
-            print("good2")
+
             Self.ChangeWeapon(0)
             
         elif Key == Instance.KeyMapper.GetKey(Actions.SecondaryWeapon):
@@ -197,11 +196,11 @@ class PlayerController(Entity):
             if len(Self.Weapons) < 2:
 
                 return
-            print("gucci")
+
             if Self.CurrentWeapon == Self.Weapons[1]:
 
                 return
-            print("gucci2")
+
             Self.ChangeWeapon(1)
             
     def GiveWeapon(Self, Weapon):

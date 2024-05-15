@@ -1,9 +1,10 @@
 from ursina import Entity, time, Vec3, destroy, raycast, color, distance_xz, random
-from physics3d import BoxCollider
+from physics3d import BoxCollider, CapsuleCollider
 from physics3d.character_controller import CharacterController
 from ursina.prefabs.health_bar import HealthBar
 from Game import Instance
 from Scenes.Town import Town
+from panda3d.core import Vec3 as PVec3
 
 class Zombies(Entity):
     def __init__(self, can_run = False, **kwargs):
@@ -11,11 +12,12 @@ class Zombies(Entity):
         self.max_hp = 100 * (1.2 ** (Instance.RoundManager.Round - 1))
         self.hp = self.max_hp
         self.random_position()
-        self.velocity = 10
+        self.velocity = 2
         if can_run:
-            self.velocity = 20
-        super().__init__( model='cube', scale_y=4, origin_y=-.5, color=color.light_gray, collider='box', **kwargs)
+            self.velocity = 8
+        super().__init__( model='Models/ZombieMine.obj', texture = 'Models/zombie.png', scale = 2.75, origin_y = 0.5, collider='box', **kwargs)
         self.Controller = CharacterController(Instance.BulletWorld, self)
+        #self.ConColl = CapsuleCollider(Instance.BulletWorld, self)
 
     def random_position(self):
         position = random.choice(Instance.CurrentScene.Respawns)
@@ -33,11 +35,17 @@ class Zombies(Entity):
         self.look_at_2d(Instance.FPSController.world_position, 'y')
         hit_info = raycast(self.world_position + Vec3(0,1,0), self.forward, 30, ignore=(self,))
         # print(hit_info.entity)
-        #self.world_position += self.forward * time.dt * 5
+        #self.world_position += self.forward * time.dt * 2
         self.Controller.setLinearMovement(self.forward * self.velocity, True)
+        if dist > 2:
+            #self.world_position += self.forward * time.dt * 2
+            #self.ConColl.position += self.forward * time.dt * 2
+            #self.ConColl.setLinearVelocity(PVec3(1, 0, 0) )
+            pass
         if hit_info.entity == Instance.FPSController:
-            if dist > 2:
-                self.position += self.forward * time.dt * 5
+            pass
+            #if dist > 2:
+                #self.world_position += self.forward * time.dt * 2
 
 
 

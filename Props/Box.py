@@ -13,7 +13,7 @@ FrameTime = GlobalClock.getFrameTime
 
 class Box(Entity):
     
-    def __init__(Self, **KWArgs):
+    def __init__(Self, Offset = Vec3(1.85, 0, -1), **KWArgs):
         
         Self.Weapons = []
         
@@ -21,7 +21,7 @@ class Box(Entity):
         
         super().__init__(**KWArgs)
         
-        Self.WeaponPosition = Self.world_position +  Vec3(0, 2, 0)
+        Self.WeaponPosition = Offset
         
         Self.CosmeticWeapon = None
         
@@ -50,8 +50,6 @@ class Box(Entity):
                     WeaponToLoad = getattr(Class, Name.replace('.py', '') )
                     
                     Self.Weapons.append(WeaponToLoad)
-                    
-        print(Self.Weapons)
         
     def Roll(Self):
         
@@ -78,14 +76,16 @@ class Box(Entity):
             if Item.__name__ not in [type(weapon).__name__ for weapon in Instance.FPSController.Weapons]:
                 
                 AvailableWeapons.append(Item)
+                
+        Self.CosmeticWeapon.world_position = Self.world_position + Self.WeaponPosition
             
-        for I in range(10):
+        for I in range(14):
             
             Self.CurrentWeapon = RandChoice(AvailableWeapons)
             
             Self.CosmeticWeapon.model_setter(Self.CurrentWeapon.Model)
-            Self.CosmeticWeapon.color_setter(Self.CurrentWeapon.Color)
             Self.CosmeticWeapon.scale_setter(Self.CurrentWeapon.Size)
+            Self.CosmeticWeapon.rotation_setter(Self.world_rotation + Vec3(0, 90, 0) )
             
             await Task.pause(0.1)
             
