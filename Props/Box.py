@@ -87,7 +87,7 @@ class Box(Entity):
             
             Self.CurrentWeapon = RandChoice(AvailableWeapons)
             
-            Self.CosmeticWeapon.model_setter(Self.CurrentWeapon.Model)
+            Self.CosmeticWeapon.model = Self.CurrentWeapon.Model
             Self.CosmeticWeapon.scale_setter(Self.CurrentWeapon.Size)
             Self.CosmeticWeapon.rotation_setter(Self.world_rotation + Vec3(0, 90, 0) )
             
@@ -99,7 +99,7 @@ class Box(Entity):
         
         if Key == Keys.E:
         
-            if not Self.Using and Instance.FPSController.Points >= Self.Cost:
+            if not Self.Using:
                 
                 Self.Roll()
                 

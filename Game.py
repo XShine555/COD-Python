@@ -56,8 +56,6 @@ class Game(ShowBase):
         
         super().__init__(True, Self.WindowType)
         
-        Self.PBR = simplepbr.init(max_lights = 0, msaa_samples = 0, enable_shadows = False)
-        
         # Camera Instance
 
         InstanceWindow.apply_settings()
@@ -97,6 +95,8 @@ class Game(ShowBase):
         Self.taskMgr.add(Self._UpdatePipeLine, "UpdatePipeLine")
         
         Self.taskMgr.add(Self._UpdatePhysics, "UpdatePhysics")
+        
+        Self.PBR = simplepbr.init(max_lights = 0, msaa_samples = 0, enable_shadows = False)
 
         # Key Detection And Mapper
 

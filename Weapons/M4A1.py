@@ -4,9 +4,8 @@ from ursina import Vec3, color, camera
 
 class M4A1(Weapon):
     
-    Size = Vec3(.3,.2,1)
-    Model = 'cube'
-    Color = color.blue
+    Size = Vec3(0.3, 0.3, 0.3)
+    Model = 'Models/m4a1.glb'
     
     def __init__(Self, **KWArgs):
         
@@ -19,7 +18,9 @@ class M4A1(Weapon):
                         Damage= 50,
                         model = M4A1.Model, 
                         parent=camera, 
-                        position=(.5,-.25,.25), 
+                        position=(.5,-.25, 0.75), 
+                        rotation=(0, -90, 0),
+                        AimPosition =  Vec3(-0.35, 0.02, 0),
                         scale=M4A1.Size, 
-                        origin_z = -0.5, 
-                        color = M4A1.Color)
+                        origin_z = -0.5
+                    )
