@@ -1,4 +1,4 @@
-from ursina import Entity, time, Vec3, destroy, raycast, color, distance_xz, random
+from ursina import Entity, time, Vec3, destroy, raycast, color, distance_xz, random, Text
 from physics3d import BoxCollider
 from physics3d.character_controller import CharacterController
 from ursina.prefabs.health_bar import HealthBar
@@ -49,8 +49,9 @@ class Zombies(Entity):
             Instance.BulletWorld.remove(self.Controller)
             destroy(self)
             return  
-        else:
-            Instance.RoundManager.Points += 10
+        elif value < self.max_hp  :
+            Instance.FPSController.Points += 10
+
 
         self.health_bar.world_scale_x = self.hp / self.max_hp * 1.5
         self.health_bar.alpha = 1

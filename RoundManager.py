@@ -32,8 +32,6 @@ class RoundManager():
 
     def StartGame(Self, Map = "NoName"):
 
-        Self.PlayerPoints = 0
-
         Instance.taskMgr.add(Self._MakeStartAnimation() )
     
     async def _spawnzombies(Self):

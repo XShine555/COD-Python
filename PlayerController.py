@@ -1,4 +1,4 @@
-from ursina import Entity, Vec3
+from ursina import Entity, Vec3, Text, color, Vec2, destroy
 from ursina import clamp as Clamp, random
 from physics3d.character_controller import CharacterController
 from panda3d.bullet import BulletWorld
@@ -71,7 +71,8 @@ class PlayerController(Entity):
         Self.CurrentWeapon.Equip()
 
         Self.Points = 1000
-
+        Self.selftext = Text(text=Self.Points, position= Vec2(0.70,-0.30))
+    
     # Basic Movement (Inherits From Controller)
 
     def Move(Self, Direction : Vec3, IsLocal : bool):
@@ -231,6 +232,7 @@ class PlayerController(Entity):
                 return True
             
         return False
+    
 
     def Update(Self):
         
@@ -259,3 +261,5 @@ class PlayerController(Entity):
         Self.CameraPivot.rotation_x -= StaticMouse.velocity[1] * Self.MouseSensitivity[0]
         
         Self.CameraPivot.rotation_x = Clamp(Self.CameraPivot.rotation_x, -90, 90)
+        
+        Self.selftext.text = (Self.Points)
