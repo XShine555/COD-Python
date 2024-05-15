@@ -2,6 +2,7 @@ from ursina import Entity, Vec3, destroy as DestroyEntity, raycast as RayCast
 from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock
 from ursina import camera
 from enemies import zombies
+from Game import Instance
 
 FrameTime = GlobalClock.getFrameTime
 
@@ -41,7 +42,7 @@ class Bullet(Entity):
             
             if type(Ray.entity).__name__ == "Zombies":
 
-                Ray.entity.hp -= 20
+                Ray.entity.hp -= Instance.FPSController.CurrentWeapon.Damage
             
             DestroyEntity(Self)
             

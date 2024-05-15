@@ -1,4 +1,4 @@
-from ursina import Entity, Vec3, destroy as Destroy, scene as InstanceScene, lerp as Lerp
+from ursina import Entity, Vec3, destroy as Destroy, scene as InstanceScene, lerp as Lerp, color
 from direct.task.Task import Task
 from Enums.Keys import Keys
 from Game import Instance
@@ -33,6 +33,10 @@ class Box(Entity):
         
         Self.CurrentWeapon = None
         
+        Self.color = color.black
+
+        Self.Cost = 950
+
     def _LoadWeapons(Self):
 
         for Root, Dirs, Files in Cd("Weapons/"):
@@ -56,7 +60,7 @@ class Box(Entity):
         Instance.taskMgr.add(Self._Roll() )
         
     async def _Roll(Self):
-        
+        Instance.FPSController.Points -= Self.Cost
         Self.CosmeticWeapon = Entity(parent = Self, model = 'cube')
         Self.CosmeticWeapon.world_parent_setter(InstanceScene)
         
@@ -94,12 +98,12 @@ class Box(Entity):
     def HandleInput(Self, Key):
         
         if Key == Keys.E:
-            
-            if not Self.Using:
+        
+            if not Self.Using and Instance.FPSController.Points >= Self.Cost:
                 
                 Self.Roll()
                 
-            else:
+            elif Self.Using:
                 
                 if Self.CanGrab:
                     

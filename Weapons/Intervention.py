@@ -11,4 +11,17 @@ class Intervention(Weapon):
     
     def __init__(Self, **KWArgs):
         
-        super().__init__(**KWArgs, Magazine = 5, AvailableFireModes=(FireModes.Safe, FireModes.SemiAutomatic), MaxMagazineAmmo = 5, ReserveAmmo = 30, MaxTotalAmmo = 30, BulletType = Bullet556Mm, model = Intervention.Model, parent=camera, position=(.5,-.25,.25), scale=Intervention.Size, origin_z = -0.5, color = Intervention.Color)
+        super().__init__(**KWArgs, 
+                        Magazine = 5, 
+                        AvailableFireModes=(FireModes.Safe, FireModes.SemiAutomatic), 
+                        MaxMagazineAmmo = 5, 
+                        ReserveAmmo = 30, 
+                        MaxTotalAmmo = 30, 
+                        BulletType = Bullet556Mm, 
+                        Damage = 40,
+                        model = Intervention.Model, 
+                        parent=camera, 
+                        position=(.5,-.25,.25), 
+                        scale=Intervention.Size, 
+                        origin_z = -0.5, 
+                        color = Intervention.Color)
