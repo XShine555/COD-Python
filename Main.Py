@@ -8,6 +8,7 @@ from Menus.PauseInGame import PauseInGame
 from Enums.Keys import Keys
 from RoundManager import RoundManager
 from enemies.zombies import Zombies
+from Minigames.Minesweeper import MineSweeper
 
 from physics3d import Debugger
 
@@ -31,5 +32,7 @@ Instance.EnableShowFPS()
 
 #Instance.LimitFPS(60)
 #Instance.enemies = Zombies()
+
+#A = MineSweeper()
 
 Instance.Run()

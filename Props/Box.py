@@ -1,4 +1,4 @@
-from ursina import Entity, Vec3, destroy as Destroy, scene as InstanceScene, lerp as Lerp
+from ursina import Entity, Vec3, destroy as Destroy, scene as InstanceScene, lerp as Lerp, color
 from direct.task.Task import Task
 from Enums.Keys import Keys
 from Game import Instance
@@ -33,6 +33,8 @@ class Box(Entity):
         
         Self.CurrentWeapon = None
         
+        Self.color = color.black
+
     def _LoadWeapons(Self):
 
         for Root, Dirs, Files in Cd("Weapons/"):

@@ -10,26 +10,20 @@ class Zombies(Entity):
         self.health_bar = Entity(parent=self, y=1.2, model='cube', color=color.red, world_scale=(4,4,4))
         self.max_hp = 100 * (1.2 ** (Instance.RoundManager.Round - 1))
         self.hp = self.max_hp
-        self.random_position()
         self.velocity = 10
         if can_run:
             self.velocity = 20
         super().__init__( model='cube', scale_y=4, origin_y=-.5, color=color.light_gray, collider='box', **kwargs)
         self.Controller = CharacterController(Instance.BulletWorld, self)
+        self.random_position()
 
     def random_position(self):
         position = random.choice(Instance.CurrentScene.Respawns)
-        print(position.z)
-        self.world_position = Vec3(position.world_position.x, position.world_position.y, position.world_position.z)
-        #randomnumber = random.randint(0,3)
-        #print(self.Respawn[randomnumber])
-        #self.world_position = (self.Respawn[randomnumber].x,0,self.Respawn[randomnumber].z )
+        self.Controller.np.setPos(position.x, position.y, position.z)
 
     def Update(self):
         dist = distance_xz(Instance.FPSController.world_position, self.world_position)
-        
         self.health_bar.alpha = max(0, self.health_bar.alpha - time.dt)
-
         self.look_at_2d(Instance.FPSController.world_position, 'y')
         hit_info = raycast(self.world_position + Vec3(0,1,0), self.forward, 30, ignore=(self,))
         # print(hit_info.entity)
@@ -38,9 +32,6 @@ class Zombies(Entity):
         if hit_info.entity == Instance.FPSController:
             if dist > 2:
                 self.position += self.forward * time.dt * 5
-
-
-
 
     @property
     def hp(self):
@@ -51,12 +42,12 @@ class Zombies(Entity):
         print("HP", value)
         self._hp = value
         if value <= 0:
-            Instance.BulletWorld.remove(self.Controller)
-            Instance.RoundManager.Points += 100
-            destroy(self)
             Instance.RoundManager.ZombiesInScene -= 1
+            Instance.RoundManager.ZombiesDeath += 1
             Instance.RoundManager.checklast()
-
+            Instance.FPSController.Points += 100
+            Instance.BulletWorld.remove(self.Controller)
+            destroy(self)
             return  
         else:
             Instance.RoundManager.Points += 10

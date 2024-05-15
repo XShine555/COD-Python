@@ -11,4 +11,18 @@ class M1911(Weapon):
     
     def __init__(Self, **KWArgs):
         
-        super().__init__(**KWArgs, Magazine = 7, MaxMagazineAmmo = 7, ReserveAmmo = 30, MaxTotalAmmo = 30, AvailableFireModes=(FireModes.Safe, FireModes.SemiAutomatic), FireMode=FireModes.Safe, BulletType = Bullet45ACP, model = M1911.Model, parent=camera, position=(.5,-.25,.25), scale=M1911.Size, origin_z = -0.5, color = M1911.Color)
+        super().__init__(**KWArgs,
+                        Magazine = 7, 
+                        MaxMagazineAmmo = 7, 
+                        ReserveAmmo = 30, 
+                        MaxTotalAmmo = 30, 
+                        AvailableFireModes=(FireModes.Safe, FireModes.SemiAutomatic), 
+                        FireMode=FireModes.Safe, 
+                        BulletType = Bullet45ACP, 
+                        Damage= 70,
+                        model = M1911.Model, 
+                        parent=camera, 
+                        position=(.5,-.25,.25), 
+                        scale=M1911.Size, 
+                        origin_z = -0.5, 
+                        color = M1911.Color)

@@ -2,6 +2,7 @@ from Game import Instance
 from direct.task.Task import Task
 from enemies.zombies import Zombies
 from ursina import Text, destroy as Destroy, Vec4, Color
+from math import floor
 
 def rgba(r, g, b, a=255):
     color = Color(r, g, b, a)
@@ -18,42 +19,54 @@ class RoundManager():
 
         Self.BaseZombies = 6
 
-        Self.Points = 1000
+        Self.MaxZombies = 4
 
-        Self.MaxZombies = 150
+        Self.ZombiesMATH = 0
 
-        Self.ZombiesInScene = 0
+        Self.ZombiesRound = 0
 
-        Self.ZombiesRound = Self.BaseZombies * 1.5 * Self.Round
+        Self.TotalZombiesRound = 0
+        
+        Self.ZombiesDeath = 0        
 
 
     def StartGame(Self, Map = "NoName"):
 
         Self.PlayerPoints = 0
 
-        Self.Round = 1
-
         Instance.taskMgr.add(Self._MakeStartAnimation() )
     
     async def _spawnzombies(Self):
         for x in range(int(Self.ZombiesRound)):
+            if Self.ZombiesInScene >= Self.MaxZombies:
+                break
             Self.ZombiesInScene += 1
+            Self.ZombiesRound -= 1
             if Self.Round > 7:
                 Zombies(can_run=True)
-            elif Self.Round > 4:
-                pass
+            #elif Self.Round > 4:
+                #pass
             else:
                 Zombies(can_run=False)
             await Task.pause(1)
 
-        print(Self.ZombiesInScene)
-
-
-    
     def checklast(Self):
-        if Self.ZombiesInScene == 0:
+        if Self.ZombiesInScene < Self.MaxZombies and Self.ZombiesRound > 0:
+            print("AQUI SI")
+            if Self.Round > 7:
+                Zombies(can_run=True)
+            else:
+                Zombies(can_run=False)
+            Self.ZombiesInScene += 1
+            Self.ZombiesRound -= 1
+
+        elif Self.TotalZombiesRound == Self.ZombiesDeath:
             Self.Round += 1
             Instance.taskMgr.add(Self._MakeStartAnimation() )
+
+        #print(Self.ZombiesRound)
+        #print(Self.ZombiesRound, Self.TotalZombiesRound)
+
 
 
     async def _MakeStartAnimation(Self):
@@ -68,6 +81,11 @@ class RoundManager():
             await Task.pause(0.1)
 
         Instance.FPSController.Freeze(False)
+
+        Self.ZombiesRound = floor(Self.BaseZombies * 0.9 * Self.Round)
+        Self.TotalZombiesRound = Self.ZombiesRound
+        Self.ZombiesInScene = 0        
+        Self.ZombiesDeath = 0        
 
         Destroy(StartText)
 

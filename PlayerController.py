@@ -1,5 +1,5 @@
 from ursina import Entity, Vec3
-from ursina import clamp as Clamp
+from ursina import clamp as Clamp, random
 from physics3d.character_controller import CharacterController
 from panda3d.bullet import BulletWorld
 from ursina import camera as StaticCamera
@@ -7,7 +7,6 @@ from ursina import mouse as StaticMouse
 from Enums.Actions import Actions
 from Weapons.Glock17 import Glock17
 from Weapons.M4A1 import M4A1
-
 from Game import Instance
 
 class PlayerController(Entity):
@@ -70,6 +69,8 @@ class PlayerController(Entity):
 
         Self.CurrentWeapon = Self.Weapons[0]
         Self.CurrentWeapon.Equip()
+
+        Self.Points = 1000
 
     # Basic Movement (Inherits From Controller)
 
