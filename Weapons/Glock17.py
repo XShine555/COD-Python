@@ -1,6 +1,6 @@
 from Weapon import Weapon
 from BulletTypes.Bullet9Mm import Bullet9Mm
-from ursina import Vec3, color, camera
+from ursina import Vec3, color, camera, Entity
 
 class Glock17(Weapon):
     
