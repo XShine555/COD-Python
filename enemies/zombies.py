@@ -11,9 +11,9 @@ class Zombies(Entity):
         self.health_bar = Entity(parent=self, y=1.2, model='cube', color=color.red, world_scale=(4,4,4))
         self.max_hp = 100 * (1.2 ** (Instance.RoundManager.Round - 1))
         self.hp = self.max_hp
-        self.velocity = 10
+        self.velocity = 2
         if can_run:
-            self.velocity = 8
+            self.velocity = 4
         super().__init__( model='Models/ZombieMine.obj', texture = 'Models/zombie.png', scale = 2.75, origin_y = 0.5, collider='box', **kwargs)
         self.Controller = CharacterController(Instance.BulletWorld, self)
         self.random_position()
