@@ -64,7 +64,8 @@ class PlayerController(Entity):
         # Inventory
 
         Self.Weapons = [
-            Glock17(),
+            #Glock17(),
+            M4A1()
         ]
 
         Self.CurrentWeapon = Self.Weapons[0]

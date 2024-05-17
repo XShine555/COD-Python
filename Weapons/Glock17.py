@@ -5,7 +5,7 @@ from ursina import Vec3, color, camera, Entity, load_model as LoadModel
 class Glock17(Weapon):
     
     Size = Vec3(3, 3, 3)
-    Model = LoadModel('Models/g18.glb')
+    Model = 'Models/g18.glb'
     
     def __init__(Self, **KWArgs):
         

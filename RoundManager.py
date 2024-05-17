@@ -79,10 +79,7 @@ class RoundManager():
             await Task.pause(0.1)
 
         Instance.FPSController.Freeze(False)
-
-        Self.ZombiesRound = floor(Self.BaseZombies * 0.9 * Self.Round)
-        Self.TotalZombiesRound = Self.ZombiesRound
-        Self.ZombiesInScene = 0        
+        
         Self.ZombiesDeath = 0        
 
         Destroy(StartText)
