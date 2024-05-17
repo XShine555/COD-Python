@@ -8,8 +8,6 @@ from Menus.PauseInGame import PauseInGame
 from Enums.Keys import Keys
 from RoundManager import RoundManager
 from enemies.zombies import Zombies
-from Minigames.Minesweeper import MineSweeper
-
 from physics3d import Debugger
 
 A = Instance.LoadSceneSafely("Town")
@@ -21,8 +19,8 @@ Instance.RoundManager = RoundManager()
 
 Deb = Debugger(Instance.BulletWorld, wireframe = True)
 
-#Gun = Glock17()
-#Gun.parent = InstanceCamera
+Gun = Glock17()
+Gun.parent = InstanceCamera
 
 Instance.MainMenu = MainMenu()
 Instance.MainMenu.Trigger()

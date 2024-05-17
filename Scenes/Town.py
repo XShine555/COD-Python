@@ -26,7 +26,7 @@ class Town(Scene):
         #RESPAWNS
 
         Self.Respawns = [
-            Entity(model = "cube", scale = 1, x = 27, z = 27 ),
+            Entity(model = "cube", scale = 1, x = 27, z = 27),
             Entity(model = "cube", scale = 1, x = -27, z = 27),
             Entity(model = "cube", scale = 1, x = 27, z = -27),
             Entity(model = "cube", scale = 1, x = -27, z = -27)

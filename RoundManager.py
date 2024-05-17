@@ -73,10 +73,10 @@ class RoundManager():
 
         StartText = Text(f"Round {Self.Round}")
         
-        #for i in range(40, -1, -1):
-            #newColor = rgba(1, 1, 1, i / 40)
-            #StartText.color = newColor
-            #await Task.pause(0.1)
+        for i in range(40, -1, -1):
+            newColor = rgba(1, 1, 1, i / 40)
+            StartText.color = newColor
+            await Task.pause(0.1)
 
         Instance.FPSController.Freeze(False)
 
@@ -87,8 +87,8 @@ class RoundManager():
 
         Destroy(StartText)
 
-        #await Task.pause(3)
+        await Task.pause(3)
 
-        #Instance.taskMgr.add(Self._spawnzombies() )
+        Instance.taskMgr.add(Self._spawnzombies() )
 
     
