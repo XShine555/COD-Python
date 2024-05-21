@@ -6,6 +6,7 @@ from ursina import camera as StaticCamera
 from ursina import mouse as StaticMouse
 from Enums.Actions import Actions
 from Weapons.Glock17 import Glock17
+from Weapons.Thompson import Thompson
 from Weapons.M4A1 import M4A1
 from Game import Instance
 
@@ -65,16 +66,19 @@ class PlayerController(Entity):
 
         Self.Weapons = [
             #Glock17(),
-            M4A1()
+            M4A1(),
+            Thompson()
         ]
 
         Self.CurrentWeapon = Self.Weapons[0]
         Self.CurrentWeapon.Equip()
 
         Self.Points = 1000
-        Self.textpoints = Text(text=Self.Points, position= Vec2(0.70,-0.30))
-    
-        Self.textammo = Text(text=f"{Self.CurrentWeapon.Magazine}/{Self.CurrentWeapon.ReserveAmmo}", position= Vec2(-0.70,-0.30))    
+        Self.textpoints = Text(text=Self.Points,position= Vec2(0.70,-0.30), background = True)
+        Self.textpoints.background.color = color.black33
+        Self.textammo = Text(text=f"{Self.CurrentWeapon.Magazine}/{Self.CurrentWeapon.ReserveAmmo}", position= Vec2(-0.70,-0.30),background = True)    
+        Self.textammo.background.color = color.black33
+
     # Basic Movement (Inherits From Controller)
 
     def Move(Self, Direction : Vec3, IsLocal : bool):

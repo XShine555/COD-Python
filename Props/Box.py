@@ -99,7 +99,7 @@ class Box(Entity):
         
         if Key == Keys.E:
         
-            if not Self.Using:
+            if not Self.Using and Instance.FPSController.Points >= Self.Cost:
                 
                 Self.Roll()
                 
