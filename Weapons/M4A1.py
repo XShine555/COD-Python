@@ -1,6 +1,8 @@
 from Weapon import Weapon
 from BulletTypes.Bullet556Mm import Bullet556Mm
 from ursina import Vec3, color, camera
+from Enums.FireModes import FireModes
+
 
 class M4A1(Weapon):
     
@@ -15,6 +17,7 @@ class M4A1(Weapon):
                         ReserveAmmo = 120, 
                         MaxTotalAmmo = 120, 
                         BulletType = Bullet556Mm, 
+                        AvailableFireModes=(FireModes.Safe,FireModes.Automatic), 
                         Damage= 50,
                         model = M4A1.Model, 
                         parent=camera, 

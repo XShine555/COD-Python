@@ -7,6 +7,7 @@ class Thompson(Weapon):
     
     Size = Vec3(7,7,7)
     Model = 'Models\m1a1_thompson.glb'
+ 
     
     def __init__(Self, **KWArgs):
         
@@ -26,4 +27,4 @@ class Thompson(Weapon):
                         AimPosition =  Vec3(-3.5, 0.35,2.3 ),
                         scale=Thompson.Size, 
                         origin_z = -0.5, 
-                        color = Thompson.Color)
+                    )
