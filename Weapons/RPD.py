@@ -6,8 +6,8 @@ from Enums.FireModes import FireModes
 class RPD(Weapon):
     
     Size = Vec3(.3,.2,1)
-    Model = 'cube'
-    Color = color.brown
+    Model = 'Models\minigun_animated.glb'
+
     
     def __init__(Self, **KWArgs):
         
@@ -17,10 +17,10 @@ class RPD(Weapon):
                         MaxTotalAmmo = 475, 
                         AvailableFireModes=(FireModes.Automatic,), 
                         FireMode=FireModes.Automatic, 
-                        BulletType = Bullet762Mm, model = RPD.Model, 
+                        BulletType = Bullet762Mm, 
+                        model = RPD.Model,
                         Damage = 40,
                         parent=camera, 
                         position=(.5,-.25,.25), 
                         scale=RPD.Size, 
-                        origin_z = -0.5, 
-                        color = RPD.Color)
+                        origin_z = -0.5)

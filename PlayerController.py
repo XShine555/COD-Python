@@ -8,6 +8,8 @@ from Enums.Actions import Actions
 from Weapons.Glock17 import Glock17
 from Weapons.Thompson import Thompson
 from Weapons.M4A1 import M4A1
+from Weapons.RPD import RPD
+from Weapons.M1911 import M1911
 from Game import Instance
 
 class PlayerController(Entity):
@@ -65,9 +67,10 @@ class PlayerController(Entity):
         # Inventory
 
         Self.Weapons = [
-            #Glock17(),
-            M4A1(),
-            Thompson()
+            Glock17()
+            #M4A1(),
+            #Thompson()
+       
         ]
 
         Self.CurrentWeapon = Self.Weapons[0]

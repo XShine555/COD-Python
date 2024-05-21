@@ -5,9 +5,8 @@ from Enums.FireModes import FireModes
 
 class M1911(Weapon):
     
-    Size = Vec3(.3,.2,1)
-    Model = 'cube'
-    Color = color.cyan
+    Size = Vec3(0.8,-0.7,1.2)
+    Model = 'Weapons\colt_m1911.glb'
     
     def __init__(Self, **KWArgs):
         
@@ -21,8 +20,9 @@ class M1911(Weapon):
                         BulletType = Bullet45ACP, 
                         Damage= 70,
                         model = M1911.Model, 
+                        rotation = (180,90,0),
                         parent=camera, 
-                        position=(.5,-.25,.25), 
+                        AimPosition =  Vec3(-1.27, 0.15,1.1),
+                        position=(2,-.60,2.5), 
                         scale=M1911.Size, 
-                        origin_z = -0.5, 
-                        color = M1911.Color)
+                        origin_z = -0.5 )
