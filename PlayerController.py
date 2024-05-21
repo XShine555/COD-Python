@@ -72,8 +72,9 @@ class PlayerController(Entity):
         Self.CurrentWeapon.Equip()
 
         Self.Points = 1000
-        Self.selftext = Text(text=Self.Points, position= Vec2(0.70,-0.30))
+        Self.textpoints = Text(text=Self.Points, position= Vec2(0.70,-0.30))
     
+        Self.textammo = Text(text=f"{Self.CurrentWeapon.Magazine}/{Self.CurrentWeapon.ReserveAmmo}", position= Vec2(-0.70,-0.30))    
     # Basic Movement (Inherits From Controller)
 
     def Move(Self, Direction : Vec3, IsLocal : bool):
@@ -262,4 +263,6 @@ class PlayerController(Entity):
         
         Self.CameraPivot.rotation_x = Clamp(Self.CameraPivot.rotation_x, -90, 90)
         
-        Self.selftext.text = (Self.Points)
+        Self.textpoints.text = (Self.Points)
+        
+        Self.textammo.text = f"{Self.CurrentWeapon.Magazine}/{Self.CurrentWeapon.ReserveAmmo}"  
