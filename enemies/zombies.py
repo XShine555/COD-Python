@@ -1,4 +1,4 @@
-from ursina import Entity, time, Vec3, destroy, raycast, color, distance_xz, random, Text
+from ursina import Entity, time, Vec3, destroy, raycast, color, distance_xz, random, Text, time
 from physics3d import BoxCollider
 from physics3d.character_controller import CharacterController
 from ursina.prefabs.health_bar import HealthBar
@@ -16,8 +16,10 @@ class Zombies(Entity):
             self.velocity = 4
         super().__init__( model='Models/ZombieMine.obj', texture = 'Models/zombie.png', scale = 2.75, origin_y = 0.5, collider='box', **kwargs)
         self.Controller = CharacterController(Instance.BulletWorld, self)
+        self.Damage = 40
+        self.Cooldown = 3
         self.random_position()
-
+        self.ourtime = time.time()
     def random_position(self):
         position = random.choice(Instance.CurrentScene.Respawns)
         self.Controller.np.setPos(position.x, position.y, position.z)
@@ -35,6 +37,12 @@ class Zombies(Entity):
             #self.ConColl.position += self.forward * time.dt * 2
             #self.ConColl.setLinearVelocity(PVec3(1, 0, 0) )
             pass
+        if dist < 2:
+            current_time = time.time()
+            if current_time - self.ourtime >= self.Cooldown:
+                Instance.FPSController.health -= self.Damage
+                Instance.FPSController.last_damage_time = time.time()     
+                self.ourtime = time.time()
         if hit_info.entity == Instance.FPSController:
             pass
             #if dist > 2:
