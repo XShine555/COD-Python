@@ -18,7 +18,7 @@ Instance.FPSController = PlayerController(World = Instance.BulletWorld, model = 
 Instance.GameStarted = False
 Instance.RoundManager = RoundManager()
 
-Deb = Debugger(Instance.BulletWorld, wireframe = True)
+#Deb = Debugger(Instance.BulletWorld, wireframe = True)
 
 Gun = Glock17()
 Gun.parent = InstanceCamera

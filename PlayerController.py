@@ -68,10 +68,10 @@ class PlayerController(Entity):
         # Inventory
 
         Self.Weapons = [
-            Glock17()
+            #Glock17()
             #M4A1(),
             #Thompson()
-       
+            RPD()
         ]
 
         Self.health = 100
@@ -79,9 +79,7 @@ class PlayerController(Entity):
         Self.healing_rate = 5  # Cantidad de vida que se cura por segundo
         Self.healing_delay = 2
         Self.texthealth = Text(text=f"      {Self.health}     ", position= Vec2(-0.70,0.30),background = True)    
-        Self.texthealth.background.color = color.green_olive
-
-        
+        Self.texthealth.background.color = color.green
 
         Self.CurrentWeapon = Self.Weapons[0]
         Self.CurrentWeapon.Equip()

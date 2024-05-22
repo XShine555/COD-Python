@@ -36,11 +36,11 @@ class Menu(Entity):
             
             SingletonApplication.paused = Self.Active
             
-        if Self.Active:
+        if Self.Active and not Self in ActiveMenus:
             
             ActiveMenus.append(Self)
             
-        else:
+        elif not Self.Active and Self in ActiveMenus:
             
             ActiveMenus.remove(Self)
         

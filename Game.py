@@ -2,7 +2,6 @@ from collections import defaultdict as DefaultDict
 from panda3d.bullet import BulletWorld
 from panda3d.core import WindowProperties
 from Enums.Keys import Keys
-from ursina import Ursina
 from importlib.util import spec_from_file_location as LoadFile, module_from_spec as ModuleToSpec
 
 from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock, ClockObject

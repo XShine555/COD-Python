@@ -5,9 +5,8 @@ from Enums.FireModes import FireModes
 
 class RPD(Weapon):
     
-    Size = Vec3(.3,.2,1)
-    Model = 'Models\minigun_animated.glb'
-
+    Size = Vec3(.1,.1, 0.1)
+    Model = 'Models\\low-poly_rpd.glb'
     
     def __init__(Self, **KWArgs):
         
@@ -22,5 +21,6 @@ class RPD(Weapon):
                         Damage = 40,
                         parent=camera, 
                         position=(.5,-.25,.25), 
+                        rotation = (40, 40, 40),
                         scale=RPD.Size, 
                         origin_z = -0.5)
