@@ -5,8 +5,8 @@ from Enums.FireModes import FireModes
 
 class Thompson(Weapon):
     
-    Size = Vec3(7,7,7)
-    Model = 'Models\m1a1_thompson.glb'
+    Size = Vec3(1,1,1)
+    Model = 'Models\\m1a1_thompson.glb'
  
     
     def __init__(Self, **KWArgs):
@@ -22,7 +22,7 @@ class Thompson(Weapon):
                         Damage= 50,
                         model = Thompson.Model, 
                         parent=camera,                         
-                        position=(7,-2.2,7), 
+                        position=(1.5,-0.4, 2), 
                         rotation = (0,-90,0),
                         AimPosition =  Vec3(-3.5, 0.35,2.3 ),
                         scale=Thompson.Size, 

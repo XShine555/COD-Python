@@ -69,8 +69,6 @@ class PlayerController(Entity):
 
         Self.Weapons = [
             Glock17()
-            #M4A1(),
-            #Thompson()
         ]
 
         Self.health = 100
@@ -188,7 +186,7 @@ class PlayerController(Entity):
 
             Self.SetRunningState(True)
 
-        elif Key == F"{Instance.KeyMapper.GetKey(Actions.Run) }_up":
+        elif Key == F"{Instance.KeyMapper.GetKey(Actions.Run) } up":
 
             Self.SetRunningState(False)
             
@@ -286,12 +284,14 @@ class PlayerController(Entity):
         
         Self.textammo.text = f"{Self.CurrentWeapon.Magazine}/{Self.CurrentWeapon.ReserveAmmo}"  
         
-        Self.texthealth.text = int(Self.health)
+        Self.texthealth.text = f"      {int(Self.health)}      "  
 
         if time.time() - Self.last_damage_time >= Self.healing_delay:
             Self.heal()
 
-        if Self.health <=0:
+        if Self.health <= 0:
+            Self.health = 0
+            Self.texthealth.text = f"      {int(Self.health)}      "  
             for i in Instance.RoundManager.ZombiesEntities:
                 try:
                     destroy(i)

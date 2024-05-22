@@ -108,6 +108,17 @@ class MainMenu(Menu):
             Instance.GameStarted = True
 
             Instance.RoundManager.StartGame()
+            
+            if Instance.CurrentScene.Respawn is not None:
+                
+                Instance.FPSController.Controller.np.setPos(Instance.CurrentScene.Respawn.x, Instance.CurrentScene.Respawn.y, Instance.CurrentScene.Respawn.z)
+                
+            else:
+                
+                Instance.FPSController.Controller.np.setPos(0, 0, 0)
+                
+            Instance.FPSController.CameraPivot.rotation_x = 0
+            Instance.FPSController.CameraPivot.rotation_y = 0
 
         else:
 

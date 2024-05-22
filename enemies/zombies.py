@@ -17,7 +17,7 @@ class Zombies(Entity):
         super().__init__( model='Models/ZombieMine.obj', texture = 'Models/zombie.png', scale = 2.75, origin_y = 0.5, collider='box', **kwargs)
         self.Controller = CharacterController(Instance.BulletWorld, self)
         self.Damage = 40
-        self.Cooldown = 3
+        self.Cooldown = 1
         self.random_position()
         self.ourtime = time.time()
     def random_position(self):

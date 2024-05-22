@@ -10,17 +10,13 @@ class PauseInGame(Menu):
         
         Self.Resume = Button("Resume", on_click = Self.Resume, color = Color.clear, scale = Vec2(0.2, 0.05), position = Vec2(0, 0.1), enabled = Self.Active)
         
-        Self.Settings = Button("Settings", on_click = Self.Settings, color = Color.clear, scale = Vec2(0.2, 0.05), position = Vec2(0, 0), enabled = Self.Active)
-        
-        Self.Quit = Button("Quit", on_click = Self.Quit, color = Color.clear, scale = Vec2(0.2, 0.05), position = Vec2(0, -0.1), enabled = Self.Active)
+        Self.Quit = Button("Quit", on_click = Self.Quit, color = Color.clear, scale = Vec2(0.2, 0.05), position = Vec2(0, 0), enabled = Self.Active)
         
     def Trigger(Self):
         
         Self.ToggleMenu()
         
         Self.Resume.enabled_setter(Self.Active)
-        
-        Self.Settings.enabled_setter(Self.Active)
         
         Self.Quit.enabled_setter(Self.Active)
 
@@ -30,13 +26,7 @@ class PauseInGame(Menu):
 
         Self.Resume.enabled_setter(Self.Active)
         
-        Self.Settings.enabled_setter(Self.Active)
-        
         Self.Quit.enabled_setter(Self.Active)
-
-    def Settings(Self):
-
-        pass
 
     def Quit(Self):
 
