@@ -79,7 +79,7 @@ class PlayerController(Entity):
         Self.healing_rate = 5  # Cantidad de vida que se cura por segundo
         Self.healing_delay = 2
         Self.texthealth = Text(text=f"      {Self.health}     ", position= Vec2(-0.70,0.30),background = True)    
-        Self.texthealth.background.color = color.green
+        Self.texthealth.background.color = color.rgb(154, 205, 50, 200)
 
         Self.CurrentWeapon = Self.Weapons[0]
         Self.CurrentWeapon.Equip()
@@ -293,5 +293,5 @@ class PlayerController(Entity):
             Self.heal()
 
         if Self.health <=0:
-            application.quit
+            application.quit()
             print("¡Has muerto, vuelve a intentarlo!")

@@ -1,7 +1,7 @@
 from ursina import Vec3, Entity
 from PlayerController import PlayerController
 from Weapons.Glock17 import Glock17
-from ursina import camera as InstanceCamera
+from ursina import camera as InstanceCamera, Text
 from Game import Instance
 from Menus.MainMenu import MainMenu
 from Menus.PauseInGame import PauseInGame
@@ -22,13 +22,13 @@ Instance.RoundManager = RoundManager()
 
 Gun = Glock17()
 Gun.parent = InstanceCamera
-
+Text.default_font = "fonts/pricedownbl.otf"
 Instance.MainMenu = MainMenu()
 Instance.MainMenu.Trigger()
 Instance.Escape = PauseInGame(KeyToActive = Keys.Escape)
 #Instance.Menu.Trigger()
 Instance.EnableShowFPS()
-Instance.Fullscreen()
+#Instance.Fullscreen()
 #Instance.LimitFPS(60)
 #Instance.enemies = Zombies()
 

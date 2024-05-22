@@ -20,7 +20,7 @@ class RPD(Weapon):
                         model = RPD.Model,
                         Damage = 40,
                         parent=camera, 
-                        position=(.5,-.25,.25), 
-                        rotation = (40, 40, 40),
+                        position=(.5,-.25,.95), 
+                        rotation = (0, -90, 0),
                         scale=RPD.Size, 
                         origin_z = -0.5)
