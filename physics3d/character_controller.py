@@ -56,7 +56,7 @@ class CharacterController(BulletCharacterControllerNode):
     
     @gravity.setter
     def gravity(self, grav:float):
-        self.setGravity(grav)
+        self.setGravity(100)
     
     @property
     def jump_speed(self):
