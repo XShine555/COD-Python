@@ -2,6 +2,7 @@ from collections import defaultdict as DefaultDict
 from panda3d.bullet import BulletWorld
 from panda3d.core import WindowProperties
 from Enums.Keys import Keys
+from ursina import Ursina
 from importlib.util import spec_from_file_location as LoadFile, module_from_spec as ModuleToSpec
 
 from direct.showbase.ShowBaseGlobal import globalClock as GlobalClock, ClockObject
@@ -96,7 +97,7 @@ class Game(ShowBase):
         
         Self.taskMgr.add(Self._UpdatePhysics, "UpdatePhysics")
         
-        Self.PBR = simplepbr.init(max_lights = 0, msaa_samples = 0, enable_shadows = False)
+        Self.PBR = simplepbr.init(max_lights = 2, msaa_samples = 0, enable_shadows = True)
 
         # Key Detection And Mapper
 
@@ -234,6 +235,9 @@ class Game(ShowBase):
         Time.dt = GlobalClock.getDt() * ApplicationSingleton.time_scale
 
         Self.mouse.update()
+        
+        for Seq in ApplicationSingleton.sequences:
+            Seq.update()
         
         if hasattr(__main__, 'Update') and __main__.Update and not ApplicationSingleton.paused:
 

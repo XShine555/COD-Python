@@ -3,8 +3,8 @@ from physics3d import BoxCollider
 from physics3d.character_controller import CharacterController
 from ursina.prefabs.health_bar import HealthBar
 from Game import Instance
-from Scenes.Town import Town
 from panda3d.core import Vec3 as PVec3
+from ursina.shaders import basic_lighting_shader
 
 class Zombies(Entity):
     def __init__(self, can_run = False, **kwargs):

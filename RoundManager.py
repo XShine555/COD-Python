@@ -1,7 +1,7 @@
 from Game import Instance
 from direct.task.Task import Task
 from enemies.zombies import Zombies
-from ursina import Text, destroy as Destroy, Vec4, Color
+from ursina import Text, destroy as Destroy, Vec4, Color, color
 from math import floor
 
 def rgba(r, g, b, a=255):
@@ -27,8 +27,9 @@ class RoundManager():
 
         Self.TotalZombiesRound = 0
         
-        Self.ZombiesDeath = 0        
-
+        Self.ZombiesDeath = 0      
+        
+        Self.RoundText = None  
 
     def StartGame(Self, Map = "NoName"):
 
@@ -42,15 +43,13 @@ class RoundManager():
             Self.ZombiesRound -= 1
             if Self.Round > 7:
                 Zombies(can_run=True)
-            #elif Self.Round > 4:
-                #pass
             else:
                 Zombies(can_run=False)
             await Task.pause(1)
 
     def checklast(Self):
         if Self.ZombiesInScene < Self.MaxZombies and Self.ZombiesRound > 0:
-            print("AQUI SI")
+            
             if Self.Round > 7:
                 Zombies(can_run=True)
             else:
@@ -62,21 +61,28 @@ class RoundManager():
             Self.Round += 1
             Instance.taskMgr.add(Self._MakeStartAnimation() )
 
-        #print(Self.ZombiesRound)
-        #print(Self.ZombiesRound, Self.TotalZombiesRound)
-
-
-
     async def _MakeStartAnimation(Self):
 
-        #Instance.FPSController.Freeze(True)
-
-        StartText = Text(f"Round {Self.Round}")
+        Instance.FPSController.Freeze(True)
         
-        for i in range(40, -1, -1):
-            newColor = rgba(1, 1, 1, i / 40)
-            StartText.color = newColor
-            await Task.pause(0.1)
+        if Self.Round == 1:
+            Self.RoundText = Text(origin=(0, 0) )
+            Self.RoundText.size = 0.1
+            Self.RoundText.color = color.red
+            Self.RoundText.text = str(Self.Round)
+            
+            Self.RoundText.animate_position((-0.85, -0.45), 4.0)
+        
+            StartText = Text(origin=(0, -1.0))
+            StartText.size = 0.15
+            StartText.text = "Round"
+            
+            for i in range(40, -1, -1):
+                newColor = rgba(1, 1, 1, i / 40)
+                StartText.color = newColor
+                await Task.pause(0.1)
+        else:
+            Self.RoundText.text = str(Self.Round)
 
         Instance.FPSController.Freeze(False)
         Self.ZombiesRound = floor(Self.BaseZombies * 0.9 * Self.Round)
@@ -84,10 +90,11 @@ class RoundManager():
         Self.ZombiesInScene = 0        
         Self.ZombiesDeath = 0     
         
-        Destroy(StartText)
+        if Self.Round == 1:
+            Destroy(StartText)   
 
         await Task.pause(3)
-
+        
         Instance.taskMgr.add(Self._spawnzombies() )
 
     
