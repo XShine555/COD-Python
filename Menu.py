@@ -24,7 +24,7 @@ class Menu(Entity):
         
         Self.Active = False
         
-    def ShowMouse(Self):
+    def ToggleMenu(Self):
         
         Instance.ShowMouse(Self.Active)
         
@@ -51,6 +51,5 @@ class Menu(Entity):
     def HandleInput(Self, Key):
         
         if Key == Self.KeyToActive and Instance.GameStarted:
-
             
             Self.Trigger()

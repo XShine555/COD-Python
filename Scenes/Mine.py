@@ -11,16 +11,19 @@ from ursina import Vec3
 from panda3d.core import LMatrix3
 from panda3d.bullet import BulletBodyNode, BulletRigidBodyNode, BulletGhostNode
 
-class Town(Scene):
+class Mine(Scene):
     
     def __init__(Self, **KWargs):
-        print("town")
-        super().__init__(**KWargs)
         
-        Self.Ground = Entity(model = 'plane', parent = Self, position = (0, 0, 0), scale = (62,0.1,62), texture = 'grass', collider = 'box')
+        super().__init__(**KWargs)
+        print("mine")
+        Self.Ground = Entity(model = 'plane', texture = 'Textures/oak_planks_mine.png', texture_scale = (16, 16), parent = Self, position = (0, 0, 0), scale = (92,0.1,92), collider = 'box')
         Self.GroundCollider = BoxCollider(Instance.BulletWorld, Self.Ground)
         Self.GroundCollider.y = -1
-        
+
+        #Self.Wall1 = Entity(model = 'cube', texture = 'Textures/cobble.png', texture_scale = (32, 6), parent = Self, position = (0, 0, 46), scale = (92,18,1), collider = 'box')
+        #Self.Wall1Collider = BoxCollider(Instance.BulletWorld, Self.Wall1)
+
         Self.Box = Box(model = 'Models/mystery_box.glb',  parent = Self, position = (0, 1, 0), scale = 2.5, collider = 'box')
 
         #RESPAWNS

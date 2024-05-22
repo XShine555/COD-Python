@@ -9,6 +9,22 @@ class Glock17(Weapon):
     
     def __init__(Self, **KWArgs):
         
-        super().__init__(**KWArgs, Magazine = 8, MaxMagazineAmmo = 8, AimPosition = Vec3(-0.4, 0.13, 0), ReserveAmmo = 32, MaxTotalAmmo = 32, BulletType = Bullet9Mm, model = Glock17.Model, parent=camera, position=(0.4, -0.35, 2.5), rotation=(0, 180, 0), scale=Glock17.Size, origin_z = -0.5, AvailableFireModes=(FireModes.Safe,FireModes.SemiAutomatic) )
+        super().__init__(
+            **KWArgs, 
+            Magazine = 8, 
+            MaxMagazineAmmo = 8, 
+            AimPosition = Vec3(-0.4, 0.13, 0), 
+            ReserveAmmo = 32, 
+            MaxTotalAmmo = 32, 
+            BulletType = Bullet9Mm, 
+            model = Glock17.Model, 
+            parent=camera, 
+            position=(0.4, -0.35, 2.5), 
+            rotation=(0, 180, 0), 
+            scale=Glock17.Size, 
+            origin_z = -0.5, 
+            AvailableFireModes=(FireModes.Safe,FireModes.SemiAutomatic), 
+            Damage = 24
+        )
         
         Self.Muzzle = Entity(model = 'cube', scale = 0.9, visible = False, color = color.blue, parent = Self, position = Vec3(0, 0, 1.4))

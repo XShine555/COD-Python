@@ -10,7 +10,8 @@ from RoundManager import RoundManager
 from enemies.zombies import Zombies
 from physics3d import Debugger
 
-A = Instance.LoadSceneSafely("Town")
+#A = Instance.LoadSceneSafely("Town")
+A = Instance.LoadSceneSafely("Mine")
 #Instance.LoadSceneSafely("Casa")
 
 Instance.FPSController = PlayerController(World = Instance.BulletWorld, model = "cube", Height = 4, collider = 'box')

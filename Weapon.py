@@ -10,7 +10,7 @@ from random import randint as Rand
 
 class Weapon(Entity):
     
-    def __init__(Self, Magazine, MaxMagazineAmmo, ReserveAmmo, MaxTotalAmmo, BulletType : Bullet, FireMode : FireModes = FireModes.Safe, AvailableFireModes : Tuple[FireModes] = (FireModes.Safe, FireModes.SemiAutomatic, FireModes.Burst_2, FireModes.Burst_3, FireModes.Automatic), IncludeChamberedBullet = True, AimPosition = Vec3(-0.25, 0, 0), **KWArgs):
+    def __init__(Self, Magazine, MaxMagazineAmmo, ReserveAmmo, MaxTotalAmmo, BulletType : Bullet, Damage, FireMode : FireModes = FireModes.Safe, AvailableFireModes : Tuple[FireModes] = (FireModes.Safe, FireModes.SemiAutomatic, FireModes.Burst_2, FireModes.Burst_3, FireModes.Automatic), IncludeChamberedBullet = True, AimPosition = Vec3(-0.25, 0, 0), **KWArgs):
         
         super().__init__(**KWArgs)
         
@@ -57,6 +57,8 @@ class Weapon(Entity):
         Self._Equipped = False
 
         Self.visible_setter(Self._Equipped)
+
+        Self.Damage = Damage
         
     def CycleFireMode(Self):
         
