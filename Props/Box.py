@@ -35,7 +35,7 @@ class Box(Entity):
         
         Self.color = color.black
 
-        Self.Cost = 1
+        Self.Cost = 950
 
     def _LoadWeapons(Self):
 

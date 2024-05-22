@@ -1,4 +1,4 @@
-from ursina import Entity, Vec3, Text, color, Vec2, destroy
+from ursina import Entity, Vec3, Text, color, Vec2, destroy, time
 from ursina import clamp as Clamp, random
 from physics3d.character_controller import CharacterController
 from panda3d.bullet import BulletWorld
@@ -11,6 +11,7 @@ from Weapons.M4A1 import M4A1
 from Weapons.RPD import RPD
 from Weapons.M1911 import M1911
 from Game import Instance
+from ursina import application
 
 class PlayerController(Entity):
 
@@ -73,6 +74,15 @@ class PlayerController(Entity):
        
         ]
 
+        Self.health = 100
+        Self.last_damage_time = time.time()
+        Self.healing_rate = 5  # Cantidad de vida que se cura por segundo
+        Self.healing_delay = 2
+        Self.texthealth = Text(text=f"      {Self.health}     ", position= Vec2(-0.70,0.30),background = True)    
+        Self.texthealth.background.color = color.green_olive
+
+        
+
         Self.CurrentWeapon = Self.Weapons[0]
         Self.CurrentWeapon.Equip()
 
@@ -81,6 +91,11 @@ class PlayerController(Entity):
         Self.textpoints.background.color = color.black33
         Self.textammo = Text(text=f"{Self.CurrentWeapon.Magazine}/{Self.CurrentWeapon.ReserveAmmo}", position= Vec2(-0.70,-0.30),background = True)    
         Self.textammo.background.color = color.black33
+
+    # Heal
+    def heal(self):
+        self.health += self.healing_rate * time.dt
+        self.health = min(self.health, 100)  
 
     # Basic Movement (Inherits From Controller)
 
@@ -273,3 +288,12 @@ class PlayerController(Entity):
         Self.textpoints.text = (Self.Points)
         
         Self.textammo.text = f"{Self.CurrentWeapon.Magazine}/{Self.CurrentWeapon.ReserveAmmo}"  
+        
+        Self.texthealth.text = int(Self.health)
+
+        if time.time() - Self.last_damage_time >= Self.healing_delay:
+            Self.heal()
+
+        if Self.health <=0:
+            application.quit
+            print("¡Has muerto, vuelve a intentarlo!")
