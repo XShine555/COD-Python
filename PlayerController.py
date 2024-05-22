@@ -68,10 +68,9 @@ class PlayerController(Entity):
         # Inventory
 
         Self.Weapons = [
-            #Glock17()
+            Glock17()
             #M4A1(),
             #Thompson()
-            RPD()
         ]
 
         Self.health = 100
@@ -293,5 +292,19 @@ class PlayerController(Entity):
             Self.heal()
 
         if Self.health <=0:
-            application.quit()
-            print("¡Has muerto, vuelve a intentarlo!")
+            for i in Instance.RoundManager.ZombiesEntities:
+                try:
+                    destroy(i)
+                except:
+                    pass
+            Instance.MainMenu.Trigger()
+            Instance.RoundManager.Reset()
+            Self.health = 100
+            Self.CurrentWeapon.UnEquip()
+            Self.Weapons = [
+                Glock17()
+            ]
+            Self.CurrentWeapon = Self.Weapons[0]
+            Self.CurrentWeapon.Equip()
+            Self.Points = 1000
+            #application.quit()

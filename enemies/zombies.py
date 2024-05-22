@@ -54,11 +54,10 @@ class Zombies(Entity):
 
     @hp.setter
     def hp(self, value):
-        print("HP", value)
+        #print("HP", value)
         self._hp = value
         if value <= 0:
-            Instance.RoundManager.ZombiesInScene -= 1
-            Instance.RoundManager.ZombiesDeath += 1
+            Instance.RoundManager.setZombieDeath(self)
             Instance.RoundManager.checklast()
             Instance.FPSController.Points += 100
             Instance.BulletWorld.remove(self.Controller)

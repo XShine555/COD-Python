@@ -24,12 +24,26 @@ class RoundManager():
         Self.ZombiesMATH = 0
 
         Self.ZombiesRound = 0
+        
+        Self.ZombiesInScene = 0
 
         Self.TotalZombiesRound = 0
         
         Self.ZombiesDeath = 0      
         
         Self.RoundText = None  
+        
+        Self.ZombiesEntities = []
+        
+    def Reset(Self):
+        Self.Round = 1
+        Self.ZombiesMATH = 0
+        Self.ZombiesRound = 0
+        Self.ZombiesInScene = 0
+        Self.TotalZombiesRound = 0
+        Self.ZombiesDeath = 0
+        Self.RoundText = None
+        Self.ZombiesEntities = []
 
     def StartGame(Self, Map = "NoName"):
 
@@ -42,28 +56,33 @@ class RoundManager():
             Self.ZombiesInScene += 1
             Self.ZombiesRound -= 1
             if Self.Round > 7:
-                Zombies(can_run=True)
+                zomb = Zombies(can_run=True)
             else:
-                Zombies(can_run=False)
+                zomb = Zombies(can_run=False)
+            Self.ZombiesEntities.append(zomb)
             await Task.pause(1)
+            
+    def setZombieDeath(Self, ent):
+        Instance.RoundManager.ZombiesInScene -= 1
+        Instance.RoundManager.ZombiesDeath += 1
+        if ent in Self.ZombiesEntities:
+            Self.ZombiesEntities.remove(ent)
 
     def checklast(Self):
-        if Self.ZombiesInScene < Self.MaxZombies and Self.ZombiesRound > 0:
-            
-            if Self.Round > 7:
-                Zombies(can_run=True)
-            else:
-                Zombies(can_run=False)
+        if Self.ZombiesInScene < Self.MaxZombies and Self.ZombiesRound >= 1:
             Self.ZombiesInScene += 1
-            Self.ZombiesRound -= 1
+            if Self.Round > 7:
+                zomb = Zombies(can_run=True)
+            else:
+                zomb = Zombies(can_run=False)
+            Self.ZombiesEntities.append(zomb)
 
+            Self.ZombiesRound -= 1
         elif Self.TotalZombiesRound == Self.ZombiesDeath:
             Self.Round += 1
             Instance.taskMgr.add(Self._MakeStartAnimation() )
 
     async def _MakeStartAnimation(Self):
-
-        Instance.FPSController.Freeze(True)
         
         if Self.Round == 1:
             Self.RoundText = Text(origin=(0, 0) )
@@ -82,9 +101,18 @@ class RoundManager():
                 StartText.color = newColor
                 await Task.pause(0.1)
         else:
+            Self.RoundText.animate_color(color.white, 1.0)
+            await Task.pause(1)
+            Self.RoundText.animate_color(color.red, 1.0)
+            await Task.pause(1)
+            Self.RoundText.animate_color(color.white, 1.0)
+            await Task.pause(1)
             Self.RoundText.text = str(Self.Round)
+            Self.RoundText.animate_color(color.red, 1.0)
+            await Task.pause(1)
+            
+        await Task.pause(1)
 
-        Instance.FPSController.Freeze(False)
         Self.ZombiesRound = floor(Self.BaseZombies * 0.9 * Self.Round)
         Self.TotalZombiesRound = Self.ZombiesRound
         Self.ZombiesInScene = 0        
@@ -92,8 +120,6 @@ class RoundManager():
         
         if Self.Round == 1:
             Destroy(StartText)   
-
-        await Task.pause(3)
         
         Instance.taskMgr.add(Self._spawnzombies() )
 
