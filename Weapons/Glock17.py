@@ -5,7 +5,7 @@ from Enums.FireModes import FireModes
 class Glock17(Weapon):
     
     Size = Vec3(3, 3, 3)
-    Model = 'Models/g18.glb'
+    Model = 'Models\\g18.glb'
     
     def __init__(Self, **KWArgs):
         

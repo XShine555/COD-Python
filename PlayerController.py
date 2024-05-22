@@ -68,7 +68,7 @@ class PlayerController(Entity):
         # Inventory
 
         Self.Weapons = [
-            Glock17()
+            M1911()
         ]
 
         Self.health = 100
@@ -302,7 +302,7 @@ class PlayerController(Entity):
             Self.health = 100
             Self.CurrentWeapon.UnEquip()
             Self.Weapons = [
-                Glock17()
+                M1911()
             ]
             Self.CurrentWeapon = Self.Weapons[0]
             Self.CurrentWeapon.Equip()

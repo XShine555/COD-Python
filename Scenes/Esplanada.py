@@ -25,7 +25,7 @@ class Esplanada(Scene):
         
         Self.Box = Box(model = 'Models/mystery_box.glb',  parent = Self, position = (0, 1, 0), scale = 2.5, collider = 'box')
 
-        Self.Resapwn = Vec3(0,0,0)
+        Self.Respawn = Vec3(0,0,0)
 
         #RESPAWNS
 

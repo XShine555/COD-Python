@@ -22,9 +22,9 @@ class Thompson(Weapon):
                         Damage= 50,
                         model = Thompson.Model, 
                         parent=camera,                         
-                        position=(1.5,-0.4, 2), 
+                        position=(1.2,-0.4, 1.1), 
                         rotation = (0,-90,0),
-                        AimPosition =  Vec3(-3.5, 0.35,2.3 ),
+                        AimPosition =  Vec3(-0.7, 0.15,0.2),
                         scale=Thompson.Size, 
                         origin_z = -0.5, 
                     )

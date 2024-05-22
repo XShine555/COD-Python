@@ -5,8 +5,8 @@ from Enums.FireModes import FireModes
 
 class M1911(Weapon):
     
-    Size = Vec3(0.8,-0.7,1.2)
-    Model = 'Weapons\colt_m1911.glb'
+    Size = Vec3(0.5,-0.7,1.2)
+    Model = 'Weapons\\colt_m1911.glb'
     
     def __init__(Self, **KWArgs):
         

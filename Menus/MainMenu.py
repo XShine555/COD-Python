@@ -109,7 +109,7 @@ class MainMenu(Menu):
 
             Instance.RoundManager.StartGame()
             
-            if Instance.CurrentScene.Respawn is not None:
+            if Instance.CurrentScene.Respawn:
                 
                 Instance.FPSController.Controller.np.setPos(Instance.CurrentScene.Respawn.x, Instance.CurrentScene.Respawn.y, Instance.CurrentScene.Respawn.z)
                 
