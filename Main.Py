@@ -28,7 +28,7 @@ Instance.MainMenu.Trigger()
 Instance.Escape = PauseInGame(KeyToActive = Keys.Escape)
 #Instance.Menu.Trigger()
 Instance.EnableShowFPS()
-
+Instance.Fullscreen()
 #Instance.LimitFPS(60)
 #Instance.enemies = Zombies()
 
