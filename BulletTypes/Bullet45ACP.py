@@ -5,4 +5,4 @@ class Bullet45ACP(Bullet):
     
     def __init__(Self, StartPosition):
         
-        super().__init__(StartPosition, 250, 9.8, 0.00127, model = "cube" )
+        super().__init__(StartPosition, 1150, 9.8, 0.00127, model = "cube" )

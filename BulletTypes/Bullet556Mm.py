@@ -5,4 +5,4 @@ class Bullet556Mm(Bullet):
     
     def __init__(Self, StartPosition):
         
-        super().__init__(StartPosition, 1200, 9.8, 0.00127, model = "cube" )
+        super().__init__(StartPosition, 1700, 9.8, 0.00127, model = "cube" )
